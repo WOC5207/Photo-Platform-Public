@@ -31,7 +31,10 @@ const settingsSchema = z.object({
   backgroundColor: z
     .string()
     .trim()
-    .regex(/^(#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}))?$/)
+    .regex(/^(#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}))?$/),
+  bookingEnabled: z.boolean(),
+  lotteryEnabled: z.boolean(),
+  creditProfilesEnabled: z.boolean()
 });
 
 export async function updateSiteSettings(
@@ -51,7 +54,10 @@ export async function updateSiteSettings(
     creditTermZh: formData.get("creditTermZh") ?? "",
     subjectTermEn: formData.get("subjectTermEn") ?? "",
     subjectTermZh: formData.get("subjectTermZh") ?? "",
-    backgroundColor: formData.get("backgroundColor") ?? ""
+    backgroundColor: formData.get("backgroundColor") ?? "",
+    bookingEnabled: formData.get("bookingEnabled") === "on",
+    lotteryEnabled: formData.get("lotteryEnabled") === "on",
+    creditProfilesEnabled: formData.get("creditProfilesEnabled") === "on"
   });
   if (!parsed.success) return { error: "validation" };
   const d = parsed.data;
@@ -70,7 +76,10 @@ export async function updateSiteSettings(
       creditTermZh: d.creditTermZh,
       subjectTermEn: d.subjectTermEn,
       subjectTermZh: d.subjectTermZh,
-      backgroundColor: d.backgroundColor
+      backgroundColor: d.backgroundColor,
+      bookingEnabled: d.bookingEnabled,
+      lotteryEnabled: d.lotteryEnabled,
+      creditProfilesEnabled: d.creditProfilesEnabled
     },
     update: {
       siteTitleEn: d.siteTitleEn,
@@ -83,7 +92,10 @@ export async function updateSiteSettings(
       creditTermZh: d.creditTermZh,
       subjectTermEn: d.subjectTermEn,
       subjectTermZh: d.subjectTermZh,
-      backgroundColor: d.backgroundColor
+      backgroundColor: d.backgroundColor,
+      bookingEnabled: d.bookingEnabled,
+      lotteryEnabled: d.lotteryEnabled,
+      creditProfilesEnabled: d.creditProfilesEnabled
     }
   });
 
