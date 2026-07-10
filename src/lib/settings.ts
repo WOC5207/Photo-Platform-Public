@@ -20,6 +20,10 @@ export interface SiteSettings {
   creditTermZh: string;
   subjectTermEn: string;
   subjectTermZh: string;
+  bookingEnabled: boolean;
+  lotteryEnabled: boolean;
+  creditProfilesEnabled: boolean;
+  setupCompleted: boolean;
 }
 
 const DEFAULTS: SiteSettings = {
@@ -36,7 +40,11 @@ const DEFAULTS: SiteSettings = {
   creditTermEn: "",
   creditTermZh: "",
   subjectTermEn: "",
-  subjectTermZh: ""
+  subjectTermZh: "",
+  bookingEnabled: true,
+  lotteryEnabled: true,
+  creditProfilesEnabled: true,
+  setupCompleted: false
 };
 
 /**

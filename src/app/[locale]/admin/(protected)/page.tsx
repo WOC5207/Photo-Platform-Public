@@ -25,24 +25,28 @@ export default async function AdminDashboardPage() {
             {t("eventsCardHint")}
           </p>
         </Link>
-        <Link
-          href="/admin/bookings"
-          className="rounded-xl border border-border bg-surface p-6 transition hover:border-border-strong"
-        >
-          <h2 className="text-lg font-semibold">{t("bookings")}</h2>
-          <p className="mt-1 text-sm text-fg-subtle">
-            {t("bookingsCardHint")}
-          </p>
-        </Link>
-        <Link
-          href="/admin/credits"
-          className="rounded-xl border border-border bg-surface p-6 transition hover:border-border-strong"
-        >
-          <h2 className="text-lg font-semibold">{t("credits", { term: creditTerm })}</h2>
-          <p className="mt-1 text-sm text-fg-subtle">
-            {t("creditsCardHint")}
-          </p>
-        </Link>
+        {settings.bookingEnabled && (
+          <Link
+            href="/admin/bookings"
+            className="rounded-xl border border-border bg-surface p-6 transition hover:border-border-strong"
+          >
+            <h2 className="text-lg font-semibold">{t("bookings")}</h2>
+            <p className="mt-1 text-sm text-fg-subtle">
+              {t("bookingsCardHint")}
+            </p>
+          </Link>
+        )}
+        {settings.creditProfilesEnabled && (
+          <Link
+            href="/admin/credits"
+            className="rounded-xl border border-border bg-surface p-6 transition hover:border-border-strong"
+          >
+            <h2 className="text-lg font-semibold">{t("credits", { term: creditTerm })}</h2>
+            <p className="mt-1 text-sm text-fg-subtle">
+              {t("creditsCardHint")}
+            </p>
+          </Link>
+        )}
         <Link
           href="/admin/settings"
           className="rounded-xl border border-border bg-surface p-6 transition hover:border-border-strong"
