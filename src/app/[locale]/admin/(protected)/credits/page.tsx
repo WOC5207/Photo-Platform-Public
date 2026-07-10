@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation";
 import { getTranslations, getLocale } from "next-intl/server";
 import { getCreditProfiles, getSiteSettings, resolveCreditTerm } from "@/lib/settings";
 import CreditProfilesManager, {
@@ -9,6 +10,7 @@ export default async function CreditProfilesPage() {
   const tc = await getTranslations("common");
   const locale = await getLocale();
   const settings = await getSiteSettings();
+  if (!settings.creditProfilesEnabled) redirect(`/${locale}/admin`);
   const creditTerm = resolveCreditTerm(settings, locale, tc("creditTerm"));
   const roster = await getCreditProfiles();
 

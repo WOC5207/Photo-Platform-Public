@@ -20,6 +20,7 @@ export default async function BookPage({
   const settings = await getSiteSettings();
   const subjectTerm = resolveSubjectTerm(settings, locale, tc("subjectTerm"));
 
+  if (!settings.bookingEnabled) notFound();
   if (!/^[a-z0-9]+$/.test(token)) notFound();
 
   const event = await prisma.bookingEvent.findUnique({

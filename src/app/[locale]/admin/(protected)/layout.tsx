@@ -23,6 +23,7 @@ export default async function AdminLayout({
 
   const t = await getTranslations();
   const settings = await getSiteSettings();
+  if (!settings.setupCompleted) redirect(`/${locale}/admin/setup`);
   const logoUrl = siteImageUrl(settings.logo);
   const creditTerm = resolveCreditTerm(settings, locale, t("common.creditTerm"));
 
@@ -51,18 +52,22 @@ export default async function AdminLayout({
               >
                 {t("admin.events")}
               </Link>
-              <Link
-                href="/admin/bookings"
-                className="text-fg-muted hover:text-fg"
-              >
-                {t("admin.bookings")}
-              </Link>
-              <Link
-                href="/admin/credits"
-                className="text-fg-muted hover:text-fg"
-              >
-                {t("admin.credits", { term: creditTerm })}
-              </Link>
+              {settings.bookingEnabled && (
+                <Link
+                  href="/admin/bookings"
+                  className="text-fg-muted hover:text-fg"
+                >
+                  {t("admin.bookings")}
+                </Link>
+              )}
+              {settings.creditProfilesEnabled && (
+                <Link
+                  href="/admin/credits"
+                  className="text-fg-muted hover:text-fg"
+                >
+                  {t("admin.credits", { term: creditTerm })}
+                </Link>
+              )}
               <Link
                 href="/admin/settings"
                 className="text-fg-muted hover:text-fg"

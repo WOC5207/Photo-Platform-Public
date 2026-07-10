@@ -1,9 +1,10 @@
-import { getTranslations } from "next-intl/server";
+import { getTranslations, getLocale } from "next-intl/server";
 import { siteImageUrl } from "@/lib/images";
 import {
   getSiteSettings,
   getContactMethods,
-  getPersonalLinks
+  getPersonalLinks,
+  resolveCreditTerm
 } from "@/lib/settings";
 import SiteSettingsForm from "@/components/admin/SiteSettingsForm";
 import SiteImageUploader from "@/components/admin/SiteImageUploader";
@@ -12,10 +13,13 @@ import ContactMethodsManager from "@/components/admin/ContactMethodsManager";
 
 export default async function SiteSettingsPage() {
   const t = await getTranslations("adminSite");
+  const tc = await getTranslations("common");
+  const locale = await getLocale();
 
   const settings = await getSiteSettings();
   const personalLinks = await getPersonalLinks();
   const contactMethods = await getContactMethods();
+  const creditTerm = resolveCreditTerm(settings, locale, tc("creditTerm"));
 
   return (
     <div className="flex flex-col gap-8">
@@ -36,8 +40,12 @@ export default async function SiteSettingsPage() {
           creditTermEn: settings.creditTermEn,
           creditTermZh: settings.creditTermZh,
           subjectTermEn: settings.subjectTermEn,
-          subjectTermZh: settings.subjectTermZh
+          subjectTermZh: settings.subjectTermZh,
+          bookingEnabled: settings.bookingEnabled,
+          lotteryEnabled: settings.lotteryEnabled,
+          creditProfilesEnabled: settings.creditProfilesEnabled
         }}
+        creditTerm={creditTerm}
       />
 
       <SiteImageUploader kind="logo" currentUrl={siteImageUrl(settings.logo)} />
