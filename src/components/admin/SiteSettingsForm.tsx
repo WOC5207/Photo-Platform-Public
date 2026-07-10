@@ -13,7 +13,8 @@ const inputCls =
 const THEME_DEFAULT_COLOR = "#0a0a0a";
 
 export default function SiteSettingsForm({
-  initial
+  initial,
+  creditTerm
 }: {
   initial: {
     siteTitleEn: string;
@@ -27,7 +28,13 @@ export default function SiteSettingsForm({
     creditTermZh: string;
     subjectTermEn: string;
     subjectTermZh: string;
+    bookingEnabled: boolean;
+    lotteryEnabled: boolean;
+    creditProfilesEnabled: boolean;
   };
+  // Resolved display term (e.g. "Cosplayer"), used to phrase the credit
+  // profiles feature toggle in the site's own configured vocabulary.
+  creditTerm: string;
 }) {
   const t = useTranslations("adminSite");
   const tc = useTranslations("common");
@@ -150,6 +157,41 @@ export default function SiteSettingsForm({
               maxLength={60}
               className={inputCls}
             />
+          </label>
+        </div>
+      </section>
+
+      {/* Site features */}
+      <section className="flex flex-col gap-3 border-t border-border pt-6">
+        <h2 className="text-lg font-semibold">{t("featuresSection")}</h2>
+        <p className="-mt-1 text-xs text-fg-subtle">{t("featuresHint")}</p>
+        <div className="flex flex-col gap-2">
+          <label className="flex items-center gap-2 text-sm">
+            <input
+              type="checkbox"
+              name="bookingEnabled"
+              defaultChecked={initial.bookingEnabled}
+              className="h-4 w-4 accent-fg"
+            />
+            <span>{t("bookingEnabledLabel")}</span>
+          </label>
+          <label className="flex items-center gap-2 text-sm">
+            <input
+              type="checkbox"
+              name="lotteryEnabled"
+              defaultChecked={initial.lotteryEnabled}
+              className="h-4 w-4 accent-fg"
+            />
+            <span>{t("lotteryEnabledLabel")}</span>
+          </label>
+          <label className="flex items-center gap-2 text-sm">
+            <input
+              type="checkbox"
+              name="creditProfilesEnabled"
+              defaultChecked={initial.creditProfilesEnabled}
+              className="h-4 w-4 accent-fg"
+            />
+            <span>{t("creditProfilesEnabledLabel", { term: creditTerm })}</span>
           </label>
         </div>
       </section>
