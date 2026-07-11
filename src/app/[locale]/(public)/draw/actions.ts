@@ -89,7 +89,7 @@ export type PublicSpinResult =
     }
   | {
       ok: false;
-      error: "rateLimited" | "spinDisabled" | "notFound" | "alreadySpun" | "noPrizesLeft";
+      error: "rateLimited" | "notFound" | "alreadySpun" | "noPrizesLeft";
     };
 
 const ERROR_MAP = {
@@ -103,7 +103,8 @@ const ERROR_MAP = {
  * their own short entry token (the same one shown to them as a
  * confirmation) rather than an internal id. The prize is chosen server-side
  * by weighted random draw among prizes still in stock — see spinForEntry.
- * Gated behind the admin's spinEnabled toggle.
+ * Available whenever the event's lottery is enabled (the entry page itself
+ * 404s otherwise).
  */
 export async function spinMyLotteryEntry(
   drawToken: string,
@@ -115,9 +116,13 @@ export async function spinMyLotteryEntry(
     return { ok: false, error: "rateLimited" };
   }
 
-  const draw = await prisma.lotteryDraw.findUnique({ where: { token: drawToken } });
-  if (!draw) return { ok: false, error: "notFound" };
-  if (!draw.spinEnabled) return { ok: false, error: "spinDisabled" };
+  const draw = await prisma.lotteryDraw.findUnique({
+    where: { token: drawToken },
+    include: { bookingEvent: { select: { lotteryEnabled: true } } }
+  });
+  if (!draw || !draw.bookingEvent.lotteryEnabled) {
+    return { ok: false, error: "notFound" };
+  }
 
   const entry = await prisma.lotteryEntry.findUnique({
     where: { drawId_token: { drawId: draw.id, token: entryToken } }

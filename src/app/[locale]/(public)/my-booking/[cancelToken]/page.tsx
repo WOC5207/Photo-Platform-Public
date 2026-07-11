@@ -5,6 +5,7 @@ import { pickText } from "@/lib/content";
 import { formatSlotRange } from "@/lib/datetime";
 import { getSiteSettings, resolveSubjectTerm } from "@/lib/settings";
 import ConfirmSubmit from "@/components/admin/ConfirmSubmit";
+import MyBookingDraw from "@/components/booking/MyBookingDraw";
 import { cancelMyBooking } from "../../book/actions";
 
 export const dynamic = "force-dynamic";
@@ -28,12 +29,49 @@ export default async function MyBookingPage({
 
   const booking = await prisma.booking.findUnique({
     where: { cancelToken },
-    include: { timeSlot: { include: { bookingEvent: true } } }
+    include: {
+      lotteryEntry: { include: { wonPrize: true } },
+      timeSlot: {
+        include: {
+          bookingEvent: {
+            include: {
+              lotteryDraw: {
+                include: {
+                  prizes: {
+                    orderBy: { sortOrder: "asc" },
+                    include: { _count: { select: { winners: true } } }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
   });
   if (!booking) notFound();
 
   const event = booking.timeSlot.bookingEvent;
   const cancelled = booking.status === "cancelled";
+
+  // The wheel shows whenever the site + event have lottery on and a draw
+  // (with its prizes) has been set up; enabling lottery is all it takes —
+  // there's no separate "allow spinning" switch. A cancelled booking never
+  // spins.
+  const draw = event.lotteryDraw;
+  const showWheel =
+    settings.lotteryEnabled &&
+    event.lotteryEnabled &&
+    !!draw &&
+    !cancelled;
+  const wheelPrizes =
+    draw?.prizes.map((p) => ({
+      id: p.id,
+      name: p.name,
+      quantity: p.quantity,
+      weight: p.weight,
+      wonCount: p._count.winners
+    })) ?? [];
 
   return (
     <div className="mx-auto flex w-full max-w-xl flex-col gap-6 rounded-2xl border border-fg/10 bg-page/85 p-6 sm:p-8">
@@ -68,6 +106,14 @@ export default async function MyBookingPage({
           </span>
         </Row>
       </dl>
+
+      {showWheel && (
+        <MyBookingDraw
+          cancelToken={cancelToken}
+          prizes={wheelPrizes}
+          alreadyWonPrizeName={booking.lotteryEntry?.wonPrize?.name ?? null}
+        />
+      )}
 
       {!cancelled && (
         <form action={cancelMyBooking}>

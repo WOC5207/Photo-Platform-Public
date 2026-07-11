@@ -105,13 +105,11 @@ export async function updateSiteSettings(
 
 export type PersonalLinkState = { error?: "validation"; ok?: boolean };
 
-const personalLinkSchema = z
-  .object({
-    labelEn: z.string().trim().max(200),
-    labelZh: z.string().trim().max(200),
-    url: z.string().trim().max(500)
-  })
-  .refine((d) => d.labelEn.length > 0 || d.labelZh.length > 0);
+const personalLinkSchema = z.object({
+  labelEn: z.string().trim().max(200),
+  labelZh: z.string().trim().max(200),
+  url: z.string().trim().min(1).max(500)
+});
 
 function parsePersonalLinkForm(formData: FormData) {
   return personalLinkSchema.safeParse({

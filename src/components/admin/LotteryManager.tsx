@@ -129,7 +129,7 @@ export default function LotteryManager({
         <select
           value={selectedEntryId}
           onChange={(e) => setSelectedEntryId(e.target.value)}
-          className={`${inputCls} max-w-xs`}
+          className="w-full max-w-xs flex-none rounded-lg border border-border-strong bg-surface px-3 py-2 text-sm text-fg outline-none focus:border-fg-subtle"
         >
           <option value="">{t("chooseEntrant")}</option>
           {pool.map((e) => (

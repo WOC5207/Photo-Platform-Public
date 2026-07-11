@@ -188,7 +188,7 @@
     "personalLinkUrl": "Link URL",
     "addPersonalLink": "Add",
     "noPersonalLinks": "No personal links yet.",
-    "personalLinkValidationError": "Please fill in at least one label.",
+    "personalLinkValidationError": "Please enter a link URL.",
     "confirmDeletePersonalLink": "Delete this personal link?",
     "moveUp": "Move earlier",
     "moveDown": "Move later"
@@ -279,12 +279,10 @@
     "shareLink": "Public entry link",
     "shareLinkHint": "Anyone with this link can enter themselves into the draw by filling in their CN and contact info — no account needed.",
     "openForEntry": "Open for public entry",
-    "spinEnabledLabel": "Allow visitors to spin the wheel themselves",
-    "spinEnabledHint": "When on, anyone who has entered can spin their own wheel from the public link — useful once you've closed entries and are ready for the live draw."
+    "openForEntryHint": "When on, anyone with the link can add themselves to the draw. Turn it off to lock the pool — people already entered can still spin."
   },
   "lotteryEntry": {
     "title": "Prize draw entry",
-    "closedNotice": "This draw is not currently accepting entries.",
     "name": "CN",
     "contactMethod": "Contact method",
     "contactMethodPlaceholder": "Choose a contact method",
@@ -297,7 +295,6 @@
     "errorNotFound": "This entry link is no longer valid.",
     "successNotice": "You're entered! Watch the wheel for your token.",
     "yourToken": "Your entry token",
-    "spinNotStarted": "The live draw hasn't started yet — check back soon.",
     "spinTitle": "Spin the wheel",
     "spin": "Spin",
     "spinning": "Spinning…",
@@ -306,7 +303,7 @@
     "alreadySpunNotice": "You already spun — you won",
     "winnersHistory": "Winners so far",
     "spinError_rateLimited": "Too many attempts from your network. Please wait and try again.",
-    "spinError_spinDisabled": "The live draw isn't open right now.",
+    "spinError_notReady": "The prize draw isn't available right now.",
     "spinError_notFound": "That entry or prize no longer exists. Please refresh.",
     "spinError_alreadySpun": "You've already spun. Please refresh.",
     "spinError_noPrizesLeft": "All prizes have been claimed."
@@ -335,7 +332,7 @@
     "errorRateLimited": "Too many booking attempts from your network. Please try again later.",
     "errorClosed": "This event is not open for booking.",
     "yourBooking": "Your booking",
-    "saveLinkNotice": "Booking confirmed! Save this page's link — it's the only way to view or cancel your booking.",
+    "saveLinkNotice": "Booking confirmed! Save this page's link to come back anytime — or use \"Check your booking\" on the event page with your CN and contact info.",
     "bookingCancelledNotice": "This booking has been cancelled.",
     "eventLabel": "Event",
     "timeLabel": "Time",
@@ -344,7 +341,17 @@
     "statusConfirmed": "Confirmed",
     "statusCancelled": "Cancelled",
     "cancelButton": "Cancel this booking",
-    "confirmCancel": "Are you sure you want to cancel this booking?"
+    "confirmCancel": "Are you sure you want to cancel this booking?",
+    "checkBookingButton": "Check your booking",
+    "checkTitle": "Check your booking",
+    "checkHint": "Enter the CN and contact info you booked with to find your booking, spin the wheel, and see your prize.",
+    "checkSubmit": "Find my booking",
+    "checkNotFound": "No booking found with that CN and contact info for this event.",
+    "checkErrorValidation": "Please enter both your CN and your contact info.",
+    "checkErrorRateLimited": "Too many attempts from your network. Please try again later.",
+    "checkResultPrize": "You won: {prize}",
+    "checkResultSpinReady": "The prize wheel is ready — open your booking to spin.",
+    "openBooking": "Open my booking"
   },
   "setup": {
     "welcomeTitle": "Welcome — let's set up your site",
@@ -369,7 +376,7 @@
     "lotteryPreview": "Adds a prize-draw tool to booking events, with a shareable public entry link and spinning wheel.",
     "creditProfilesPreview": "Remembers {term}s' social links so photo-credit forms can autofill them next time.",
     "contactTitle": "How can visitors reach you?",
-    "contactHint": "Add at least one contact method (e.g. WeChat, Email) for the booking form's dropdown.",
+    "contactHint": "Contact methods visitors can use when booking.",
     "contactRequiredError": "Add at least one contact method to continue.",
     "logoTitle": "Add a logo",
     "backgroundTitle": "Add a background image",

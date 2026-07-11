@@ -237,14 +237,11 @@ model LotteryDraw {
   bookingEvent   BookingEvent   @relation(fields: [bookingEventId], references: [id], onDelete: Cascade)
   // Unguessable token used in the shareable public entry-link URL
   token          String         @unique
-  // Whether the public entry link currently accepts new entries. Toggled off
-  // once the admin wants to lock the pool before spinning.
+  // Whether the public entry link currently accepts new self-entries. Toggled
+  // off once the admin wants to lock the pool. Spinning itself is always
+  // available while the event's lottery is enabled — there is no separate
+  // per-draw spin switch.
   open           Boolean        @default(true)
-  // Whether visitors who already have an entry may spin the wheel themselves
-  // (self-serve draw) from the public link. Separate from `open` so the
-  // admin can close entries first, then flip this on to start the live
-  // draw. Defaults off so existing/new draws don't expose this unprompted.
-  spinEnabled    Boolean        @default(false)
   entries        LotteryEntry[]
   prizes         LotteryPrize[]
   createdAt      DateTime       @default(now())

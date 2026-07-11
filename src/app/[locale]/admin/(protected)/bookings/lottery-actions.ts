@@ -17,9 +17,10 @@ async function guard(): Promise<void> {
 
 /**
  * Master switch for the whole prize-draw tool on one booking event. Off by
- * default; while off, the "Prize draw" link is hidden from the event page
- * and the public entry link 404s, regardless of the draw's own open/
- * spinEnabled toggles underneath.
+ * default; while off, the "Prize draw" link is hidden from the event page and
+ * the public entry link 404s. When on, visitors can spin straight away — there
+ * is no separate per-draw "allow spinning" switch; only `open` (whether the
+ * public link still takes new self-entries) remains underneath.
  */
 export async function updateLotteryEnabled(formData: FormData): Promise<void> {
   await guard();
@@ -77,17 +78,6 @@ export async function updateLotteryDrawOpen(formData: FormData): Promise<void> {
   if (typeof drawId !== "string") return;
   const open = formData.get("open") === "on";
   await prisma.lotteryDraw.update({ where: { id: drawId }, data: { open } }).catch(() => {});
-  revalidatePath("/", "layout");
-}
-
-export async function updateLotterySpinEnabled(formData: FormData): Promise<void> {
-  await guard();
-  const drawId = formData.get("drawId");
-  if (typeof drawId !== "string") return;
-  const spinEnabled = formData.get("spinEnabled") === "on";
-  await prisma.lotteryDraw
-    .update({ where: { id: drawId }, data: { spinEnabled } })
-    .catch(() => {});
   revalidatePath("/", "layout");
 }
 

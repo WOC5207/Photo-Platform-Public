@@ -6,9 +6,7 @@ import { ensureLotteryDraw } from "@/lib/lottery";
 import { getSiteSettings } from "@/lib/settings";
 import { Link } from "@/i18n/navigation";
 import CopyButton from "@/components/admin/CopyButton";
-import LotteryOpenToggle, {
-  LotterySpinEnabledToggle
-} from "@/components/admin/LotteryOpenToggle";
+import LotteryOpenToggle from "@/components/admin/LotteryOpenToggle";
 import LotteryManager from "@/components/admin/LotteryManager";
 
 export default async function LotteryPage({
@@ -114,12 +112,7 @@ export default async function LotteryPage({
             defaultOpen={draw.open}
             openLabel={t("openForEntry")}
           />
-          <LotterySpinEnabledToggle
-            drawId={draw.id}
-            defaultSpinEnabled={draw.spinEnabled}
-            label={t("spinEnabledLabel")}
-          />
-          <p className="text-xs text-fg-subtle">{t("spinEnabledHint")}</p>
+          <p className="text-xs text-fg-subtle">{t("openForEntryHint")}</p>
         </div>
       </div>
 

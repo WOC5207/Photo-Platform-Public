@@ -17,6 +17,10 @@ data/photos/*
 data/db/*
 !data/db/.gitkeep
 
+# local dev database (created under prisma/ because DATABASE_URL in .env is a
+# relative path resolved against schema.prisma's directory, not the repo root)
+prisma/data/
+
 # env files — commit only .env.example
 .env
 .env.*
