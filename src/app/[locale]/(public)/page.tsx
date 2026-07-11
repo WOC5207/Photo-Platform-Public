@@ -96,7 +96,7 @@ export default async function HomePage() {
 
   const personalLinkItems: PersonalLinkItem[] = personalLinks.map((l) => ({
     id: l.id,
-    label: pickText(locale, l.labelEn, l.labelZh),
+    label: pickText(locale, l.labelEn, l.labelZh) || l.url,
     url: l.url
   }));
 

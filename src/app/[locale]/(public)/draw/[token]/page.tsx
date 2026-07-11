@@ -74,19 +74,12 @@ export default async function LotteryEntryPage({
         )}
       </div>
 
-      {!draw.open && !draw.spinEnabled ? (
-        <p className="rounded-xl border border-border bg-surface p-6 text-center text-fg-subtle">
-          {t("closedNotice")}
-        </p>
-      ) : (
-        <LotteryEntryForm
-          drawToken={token}
-          contactMethods={contactMethods}
-          spinEnabled={draw.spinEnabled}
-          entries={entries}
-          prizes={prizes}
-        />
-      )}
+      <LotteryEntryForm
+        drawToken={token}
+        contactMethods={contactMethods}
+        entries={entries}
+        prizes={prizes}
+      />
     </div>
   );
 }

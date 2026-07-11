@@ -4,6 +4,7 @@ import { prisma } from "@/lib/db";
 import { pickText } from "@/lib/content";
 import { formatDate } from "@/lib/datetime";
 import { getContactMethods, getSiteSettings, resolveSubjectTerm } from "@/lib/settings";
+import { Link } from "@/i18n/navigation";
 import BookingForm, { type PublicSlot } from "@/components/booking/BookingForm";
 
 export const dynamic = "force-dynamic";
@@ -67,6 +68,12 @@ export default async function BookPage({
             {description}
           </p>
         )}
+        <Link
+          href={`/book/${token}/check`}
+          className="mt-4 inline-block rounded-full border border-border-strong px-5 py-2 text-sm font-semibold text-fg-muted transition hover:border-fg-faint hover:text-fg"
+        >
+          {t("checkBookingButton")}
+        </Link>
       </div>
 
       {!event.open ? (

@@ -22,13 +22,11 @@ const inputCls =
 export default function LotteryEntryForm({
   drawToken,
   contactMethods,
-  spinEnabled,
   entries,
   prizes
 }: {
   drawToken: string;
   contactMethods: PublicContactMethod[];
-  spinEnabled: boolean;
   entries: PublicLotteryEntry[];
   prizes: PublicLotteryPrize[];
 }) {
@@ -60,18 +58,12 @@ export default function LotteryEntryForm({
           </p>
         )}
 
-        {spinEnabled ? (
-          <PublicLotteryDraw
-            drawToken={drawToken}
-            myEntryToken={state.token}
-            entries={entries}
-            prizes={prizes}
-          />
-        ) : (
-          <p className="rounded-xl border border-border bg-surface p-6 text-center text-fg-subtle">
-            {t("spinNotStarted")}
-          </p>
-        )}
+        <PublicLotteryDraw
+          drawToken={drawToken}
+          myEntryToken={state.token}
+          entries={entries}
+          prizes={prizes}
+        />
       </div>
     );
   }

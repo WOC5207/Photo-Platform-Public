@@ -188,7 +188,7 @@
     "personalLinkUrl": "链接地址",
     "addPersonalLink": "添加",
     "noPersonalLinks": "还没有添加个人链接。",
-    "personalLinkValidationError": "请至少填写一个标签。",
+    "personalLinkValidationError": "请填写链接地址。",
     "confirmDeletePersonalLink": "删除这个个人链接？",
     "moveUp": "提前",
     "moveDown": "延后"
@@ -279,12 +279,10 @@
     "shareLink": "公开报名链接",
     "shareLinkHint": "任何人打开此链接，填写 CN 和联系方式即可报名参与抽奖，无需注册账号。",
     "openForEntry": "开放公开报名",
-    "spinEnabledLabel": "允许访客自行转动转盘",
-    "spinEnabledHint": "开启后，已报名的访客可通过公开链接自行转动属于自己的转盘——适合在关闭报名、准备开始现场抽奖时使用。"
+    "openForEntryHint": "开启后，任何人打开链接均可自行报名参与抽奖。关闭可锁定名单——已报名的访客仍可抽奖。"
   },
   "lotteryEntry": {
     "title": "抽奖报名",
-    "closedNotice": "该抽奖暂未开放报名。",
     "name": "CN",
     "contactMethod": "联系方式",
     "contactMethodPlaceholder": "选择联系方式",
@@ -297,7 +295,6 @@
     "errorNotFound": "该报名链接已失效。",
     "successNotice": "报名成功！请留意大转盘上的编号。",
     "yourToken": "你的抽奖码",
-    "spinNotStarted": "现场抽奖尚未开始，请稍后再来查看。",
     "spinTitle": "转动转盘",
     "spin": "开始抽奖",
     "spinning": "抽奖中…",
@@ -306,7 +303,7 @@
     "alreadySpunNotice": "你已经抽过奖了，中奖结果：",
     "winnersHistory": "已中奖名单",
     "spinError_rateLimited": "你所在网络的请求过多，请稍后再试。",
-    "spinError_spinDisabled": "现场抽奖当前未开放。",
+    "spinError_notReady": "抽奖当前不可用。",
     "spinError_notFound": "该参与者或奖品已不存在，请刷新页面。",
     "spinError_alreadySpun": "你已经抽过奖了，请刷新页面。",
     "spinError_noPrizesLeft": "所有奖品均已被抽完。"
@@ -335,7 +332,7 @@
     "errorRateLimited": "你所在网络的预约请求过多，请稍后再试。",
     "errorClosed": "该活动未开放预约。",
     "yourBooking": "我的预约",
-    "saveLinkNotice": "预约成功！请保存本页链接——这是查看或取消预约的唯一方式。",
+    "saveLinkNotice": "预约成功！请保存本页链接以便随时返回——也可在活动页用“查询我的预约”，凭 CN 和联系信息找回。",
     "bookingCancelledNotice": "该预约已被取消。",
     "eventLabel": "活动",
     "timeLabel": "时间",
@@ -344,7 +341,17 @@
     "statusConfirmed": "已确认",
     "statusCancelled": "已取消",
     "cancelButton": "取消该预约",
-    "confirmCancel": "确定要取消该预约吗？"
+    "confirmCancel": "确定要取消该预约吗？",
+    "checkBookingButton": "查询我的预约",
+    "checkTitle": "查询我的预约",
+    "checkHint": "输入你预约时填写的 CN 和联系信息，即可找回预约、转动转盘并查看中奖结果。",
+    "checkSubmit": "查询预约",
+    "checkNotFound": "未找到使用该 CN 和联系信息在本活动的预约。",
+    "checkErrorValidation": "请同时填写 CN 和联系信息。",
+    "checkErrorRateLimited": "你所在网络的请求过多，请稍后再试。",
+    "checkResultPrize": "你中奖了：{prize}",
+    "checkResultSpinReady": "转盘已就绪——打开预约即可抽奖。",
+    "openBooking": "打开我的预约"
   },
   "setup": {
     "welcomeTitle": "欢迎——让我们来设置你的网站",
@@ -369,7 +376,7 @@
     "lotteryPreview": "为预约活动增加抽奖工具，附带可分享的公开参与链接和转盘抽奖。",
     "creditProfilesPreview": "记住{term}的社交主页链接，下次填写照片署名时可自动填充。",
     "contactTitle": "访客如何联系你？",
-    "contactHint": "至少添加一种联系方式（如微信、邮箱），供预约表单下拉选择。",
+    "contactHint": "访客在预定时可以使用的联系方式。",
     "contactRequiredError": "请至少添加一种联系方式后再继续。",
     "logoTitle": "添加 Logo",
     "backgroundTitle": "添加背景图片",
