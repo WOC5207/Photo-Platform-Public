@@ -1,0 +1,121 @@
+@import "tailwindcss";
+
+/* Explicit .dark/.light classes (set by the theme-init script in the root
+   layout) always win; absent either class, the OS preference decides. */
+@custom-variant dark (&:where(.dark, .dark *));
+@custom-variant light (&:where(.light, .light *));
+
+@theme inline {
+  --color-page: var(--color-page);
+  --color-surface: var(--color-surface);
+  --color-surface-2: var(--color-surface-2);
+  --color-fg: var(--color-fg);
+  --color-fg-muted: var(--color-fg-muted);
+  --color-fg-subtle: var(--color-fg-subtle);
+  --color-fg-faint: var(--color-fg-faint);
+  --color-border: var(--color-border);
+  --color-border-strong: var(--color-border-strong);
+  /* Semantic status colors (success/danger). Defined per-theme below so that
+     confirmations, errors, badges etc. stay legible in BOTH light and dark —
+     the previous hard-coded emerald/red Tailwind shades were tuned for dark
+     only and washed out on the light theme. */
+  --color-success: var(--color-success);
+  --color-success-strong: var(--color-success-strong);
+  --color-success-surface: var(--color-success-surface);
+  --color-success-border: var(--color-success-border);
+  --color-danger: var(--color-danger);
+  --color-danger-strong: var(--color-danger-strong);
+  --color-danger-surface: var(--color-danger-surface);
+  --color-danger-border: var(--color-danger-border);
+}
+
+:root {
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC",
+    sans-serif;
+
+  /* Light theme (default). */
+  --color-page: #ffffff;
+  --color-surface: #f5f5f5;
+  --color-surface-2: #e5e5e5;
+  --color-fg: #0a0a0a;
+  --color-fg-muted: #404040;
+  --color-fg-subtle: #525252;
+  --color-fg-faint: #737373;
+  --color-border: #e5e5e5;
+  --color-border-strong: #d4d4d4;
+  --color-success: #047857;
+  --color-success-strong: #065f46;
+  --color-success-surface: rgba(5, 150, 105, 0.12);
+  --color-success-border: rgba(5, 150, 105, 0.35);
+  --color-danger: #b91c1c;
+  --color-danger-strong: #991b1b;
+  --color-danger-surface: rgba(220, 38, 38, 0.1);
+  --color-danger-border: rgba(220, 38, 38, 0.3);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
+    --color-page: #0a0a0a;
+    --color-surface: #171717;
+    --color-surface-2: #262626;
+    --color-fg: #f5f5f5;
+    --color-fg-muted: #d4d4d4;
+    --color-fg-subtle: #a3a3a3;
+    --color-fg-faint: #737373;
+    --color-border: #262626;
+    --color-border-strong: #404040;
+    --color-success: #6ee7b7;
+    --color-success-strong: #a7f3d0;
+    --color-success-surface: rgba(6, 78, 59, 0.45);
+    --color-success-border: rgba(6, 95, 70, 0.7);
+    --color-danger: #f87171;
+    --color-danger-strong: #fca5a5;
+    --color-danger-surface: rgba(69, 10, 10, 0.55);
+    --color-danger-border: rgba(127, 29, 29, 0.7);
+  }
+}
+
+.dark {
+  --color-page: #0a0a0a;
+  --color-surface: #171717;
+  --color-surface-2: #262626;
+  --color-fg: #f5f5f5;
+  --color-fg-muted: #d4d4d4;
+  --color-fg-subtle: #a3a3a3;
+  --color-fg-faint: #737373;
+  --color-border: #262626;
+  --color-border-strong: #404040;
+  --color-success: #6ee7b7;
+  --color-success-strong: #a7f3d0;
+  --color-success-surface: rgba(6, 78, 59, 0.45);
+  --color-success-border: rgba(6, 95, 70, 0.7);
+  --color-danger: #f87171;
+  --color-danger-strong: #fca5a5;
+  --color-danger-surface: rgba(69, 10, 10, 0.55);
+  --color-danger-border: rgba(127, 29, 29, 0.7);
+}
+
+body {
+  font-family: var(--font-sans);
+}
+
+/* Native <input type="date"> controls (calendar picker icon, etc.) render
+   dark by default, which reads as near-invisible against our dark theme's
+   dark input backgrounds. color-scheme hints the browser to use its dark
+   native-control palette instead; the explicit filter is a belt-and-braces
+   fix for Chromium's calendar icon specifically. */
+.dark input {
+  color-scheme: dark;
+}
+.dark input::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) input {
+    color-scheme: dark;
+  }
+  :root:not(.light) input::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+  }
+}

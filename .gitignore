@@ -1,0 +1,33 @@
+# dependencies
+node_modules/
+
+# next.js
+.next/
+out/
+
+# local data (dev database + uploaded photos) — the photos/ and db/
+# folders themselves are tracked (as empty placeholders, see data/*/.gitkeep)
+# so Docker's bind mounts always have somewhere to mount on a fresh clone;
+# only their actual contents are ignored.
+data/*
+!data/photos
+data/photos/*
+!data/photos/.gitkeep
+!data/db
+data/db/*
+!data/db/.gitkeep
+
+# local dev database (created under prisma/ because DATABASE_URL in .env is a
+# relative path resolved against schema.prisma's directory, not the repo root)
+prisma/data/
+
+# env files — commit only .env.example
+.env
+.env.*
+!.env.example
+
+# misc
+*.log
+.DS_Store
+next-env.d.ts
+*.tsbuildinfo
