@@ -1,13 +1,15 @@
-"use client";
-
-import { useState } from "react";
 import { Link } from "@/i18n/navigation";
 
-export interface HighlightEvent {
+export interface HighlightPhoto {
+  id: string;
+  url: string;
+}
+
+export interface HighlightEventGroup {
   slug: string;
   title: string;
   dateLabel: string | null;
-  photoUrl: string | null;
+  photos: HighlightPhoto[];
 }
 
 export interface HighlightAnnouncement {
@@ -17,119 +19,90 @@ export interface HighlightAnnouncement {
 }
 
 export interface HomeHighlightsLabels {
-  eventsTab: string;
-  announcementsTab: string;
-  noEvents: string;
-  noAnnouncements: string;
+  announcementsHeading: string;
+  highlightsHeading: string;
+  noHighlightEvents: string;
 }
 
-const tabCls = (active: boolean) =>
-  `shrink-0 whitespace-nowrap rounded-lg px-3 py-2 text-left text-sm font-medium transition ${
-    active
-      ? "bg-fg text-page"
-      : "text-fg-muted hover:bg-fg/5 hover:text-fg"
-  }`;
-
 /**
- * Homepage panel: a left-side tab switcher between event highlights and
- * admin announcements. Client-rendered for the tab state; the data itself
- * (events, announcements) is resolved server-side and passed in as plain
- * props. The search box lives in the hero above this panel, not in here —
- * see HomeSearchBox.
+ * Homepage panel: admin announcements pinned at the top (shown only when
+ * there are any — not an empty placeholder that's always there), followed
+ * by event highlights grouped per event, each its own small heading + photo
+ * strip. No interactivity here anymore (search moved out to HomeSearchBox,
+ * and there's no tab to switch — announcements are always visible rather
+ * than something you navigate to), so this can be a plain server component.
  */
 export default function HomeHighlightsPanel({
   events,
   announcements,
   labels
 }: {
-  events: HighlightEvent[];
+  events: HighlightEventGroup[];
   announcements: HighlightAnnouncement[];
   labels: HomeHighlightsLabels;
 }) {
-  const [tab, setTab] = useState<"events" | "announcements">("events");
-
   return (
-    <section className="overflow-hidden rounded-2xl border border-fg/10 bg-page/85">
-      <div className="flex flex-col gap-6 p-6 sm:p-8 lg:flex-row lg:gap-8">
-        <div className="flex shrink-0 gap-2 overflow-x-auto lg:w-44 lg:flex-col lg:overflow-visible">
-          <button
-            type="button"
-            onClick={() => setTab("events")}
-            className={tabCls(tab === "events")}
-          >
-            {labels.eventsTab}
-          </button>
-          <button
-            type="button"
-            onClick={() => setTab("announcements")}
-            className={tabCls(tab === "announcements")}
-          >
-            {labels.announcementsTab}
-          </button>
+    <section className="flex flex-col gap-8 overflow-hidden rounded-2xl border border-fg/10 bg-page/85 p-6 sm:p-8">
+      {announcements.length > 0 && (
+        <div className="flex flex-col gap-3">
+          <h2 className="text-lg font-bold">{labels.announcementsHeading}</h2>
+          <ul className="flex flex-col gap-3">
+            {announcements.map((a) => (
+              <li
+                key={a.id}
+                className="rounded-xl border border-fg/10 bg-surface p-3"
+              >
+                <p className="font-semibold">{a.title}</p>
+                {a.body && (
+                  <p className="mt-1 whitespace-pre-line text-sm text-fg-subtle">
+                    {a.body}
+                  </p>
+                )}
+              </li>
+            ))}
+          </ul>
         </div>
+      )}
 
-        <div className="min-w-0 flex-1">
-          {tab === "events" &&
-            (events.length > 0 ? (
-              <ul className="grid grid-cols-3 gap-3 sm:grid-cols-4">
-                {events.map((event) => (
-                  <li key={event.slug}>
+      <div className="flex flex-col gap-6">
+        <h2 className="text-lg font-bold">{labels.highlightsHeading}</h2>
+        {events.length > 0 ? (
+          events.map((event) => (
+            <div key={event.slug} className="flex flex-col gap-3">
+              <Link
+                href={`/gallery/${event.slug}`}
+                className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 hover:underline"
+              >
+                <span className="font-semibold">{event.title}</span>
+                {event.dateLabel && (
+                  <span className="shrink-0 text-xs text-fg-subtle">
+                    {event.dateLabel}
+                  </span>
+                )}
+              </Link>
+              <ul className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                {event.photos.map((photo) => (
+                  <li key={photo.id}>
                     <Link
                       href={`/gallery/${event.slug}`}
-                      className="group relative block aspect-square overflow-hidden rounded-xl bg-surface"
+                      className="group block aspect-square overflow-hidden rounded-xl bg-surface"
                     >
-                      {event.photoUrl ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          src={event.photoUrl}
-                          alt={event.title}
-                          loading="lazy"
-                          className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
-                        />
-                      ) : (
-                        <div className="flex h-full w-full items-center justify-center text-2xl text-fg-faint">
-                          ✦
-                        </div>
-                      )}
-                      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 via-black/15 to-transparent p-2 pt-6">
-                        <p className="truncate text-xs font-semibold text-white">
-                          {event.title}
-                        </p>
-                        {event.dateLabel && (
-                          <p className="truncate text-[10px] text-white/70">
-                            {event.dateLabel}
-                          </p>
-                        )}
-                      </div>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={photo.url}
+                        alt=""
+                        loading="lazy"
+                        className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+                      />
                     </Link>
                   </li>
                 ))}
               </ul>
-            ) : (
-              <p className="text-sm text-fg-subtle">{labels.noEvents}</p>
-            ))}
-
-          {tab === "announcements" &&
-            (announcements.length > 0 ? (
-              <ul className="flex flex-col gap-3">
-                {announcements.map((a) => (
-                  <li
-                    key={a.id}
-                    className="rounded-xl border border-fg/10 bg-surface p-3"
-                  >
-                    <p className="font-semibold">{a.title}</p>
-                    {a.body && (
-                      <p className="mt-1 whitespace-pre-line text-sm text-fg-subtle">
-                        {a.body}
-                      </p>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-sm text-fg-subtle">{labels.noAnnouncements}</p>
-            ))}
-        </div>
+            </div>
+          ))
+        ) : (
+          <p className="text-sm text-fg-subtle">{labels.noHighlightEvents}</p>
+        )}
       </div>
     </section>
   );

@@ -45,13 +45,12 @@
     "quickStatsPhotos": "照片",
     "quickStatsAlbums": "相册",
     "personalLinksTitle": "更多平台",
-    "eventsTab": "精选",
-    "announcementsTab": "公告",
+    "highlightsHeading": "精选",
+    "announcementsHeading": "公告",
     "searchPlaceholder": "搜索Coser或角色…",
     "searching": "搜索中…",
     "noSearchResults": "没有找到匹配结果。",
-    "noHighlightEvents": "还没有已发布的活动。",
-    "noAnnouncements": "暂无公告。"
+    "noHighlightEvents": "还没有已发布的活动。"
   },
   "auth": {
     "loginTitle": "管理员登录",

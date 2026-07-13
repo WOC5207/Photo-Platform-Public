@@ -45,13 +45,12 @@
     "quickStatsPhotos": "Photos",
     "quickStatsAlbums": "Albums",
     "personalLinksTitle": "Find me elsewhere",
-    "eventsTab": "Highlights",
-    "announcementsTab": "Announcements",
+    "highlightsHeading": "Highlights",
+    "announcementsHeading": "Announcements",
     "searchPlaceholder": "Search a cosplayer or character…",
     "searching": "Searching…",
     "noSearchResults": "No matches found.",
-    "noHighlightEvents": "No published events yet.",
-    "noAnnouncements": "No announcements right now."
+    "noHighlightEvents": "No published events yet."
   },
   "auth": {
     "loginTitle": "Admin login",

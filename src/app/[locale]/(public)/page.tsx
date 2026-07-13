@@ -15,7 +15,7 @@ import EventPhotoStream, {
   type StreamEvent
 } from "@/components/EventPhotoStream";
 import HomeHighlightsPanel, {
-  type HighlightEvent,
+  type HighlightEventGroup,
   type HighlightAnnouncement
 } from "@/components/HomeHighlightsPanel";
 import HomeSearchBox from "@/components/HomeSearchBox";
@@ -122,25 +122,29 @@ export default async function HomePage() {
       }))
     }));
 
-  // The highlights panel shows a handful of events by their admin-selected
-  // cover photo (same one used on the gallery listing) rather than
-  // duplicating the full per-event photo stream shown below in "Recent
-  // work" — events without a resolvable photo are skipped, not shown as an
-  // empty tile.
-  const highlightEvents: HighlightEvent[] = events
-    .flatMap((e) => {
-      const cover = e.coverPhoto ?? e.photos[0] ?? null;
-      if (!cover) return [];
-      return [
-        {
-          slug: e.slug,
-          title: pickText(locale, e.titleEn, e.titleZh),
-          dateLabel: formatDateRange(e.dateStart, e.dateEnd) || null,
-          photoUrl: photoUrls(e.id, cover.id).med
-        }
-      ];
+  // The highlights panel groups a handful of events into their own section
+  // each, leading with the admin-selected cover photo (same one used on the
+  // gallery listing) followed by a few more from that event — a curated
+  // preview per event, distinct from the full per-event photo stream shown
+  // below in "Recent work". Events with no photos are skipped.
+  const highlightEvents: HighlightEventGroup[] = events
+    .filter((e) => e.photos.length > 0)
+    .map((e) => {
+      const cover = e.coverPhoto;
+      const ordered = cover
+        ? [cover, ...e.photos.filter((p) => p.id !== cover.id)]
+        : e.photos;
+      return {
+        slug: e.slug,
+        title: pickText(locale, e.titleEn, e.titleZh),
+        dateLabel: formatDateRange(e.dateStart, e.dateEnd) || null,
+        photos: ordered.slice(0, 4).map((p) => ({
+          id: p.id,
+          url: photoUrls(e.id, p.id).med
+        }))
+      };
     })
-    .slice(0, 8);
+    .slice(0, 6);
 
   const announcementItems: HighlightAnnouncement[] = announcements.map((a) => ({
     id: a.id,
@@ -188,10 +192,9 @@ export default async function HomePage() {
         events={highlightEvents}
         announcements={announcementItems}
         labels={{
-          eventsTab: t("eventsTab"),
-          announcementsTab: t("announcementsTab"),
-          noEvents: t("noHighlightEvents"),
-          noAnnouncements: t("noAnnouncements")
+          announcementsHeading: t("announcementsHeading"),
+          highlightsHeading: t("highlightsHeading"),
+          noHighlightEvents: t("noHighlightEvents")
         }}
       />
 
