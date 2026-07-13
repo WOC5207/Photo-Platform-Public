@@ -66,7 +66,9 @@
     "bookingsCardHint": "Create bookable events and manage reservations.",
     "creditsCardHint": "Manage remembered credits and their social links.",
     "site": "Site settings",
-    "siteCardHint": "Customize the site title, homepage text, background and logo."
+    "siteCardHint": "Customize the site title, homepage text, background and logo.",
+    "resourceMonitor": "Resource monitor",
+    "resourceMonitorCardHint": "See how much storage your photos, site images and database are using."
   },
   "adminEvents": {
     "listTitle": "Gallery events",
@@ -211,6 +213,20 @@
     "confirmDeletePersonalLink": "Delete this personal link?",
     "moveUp": "Move earlier",
     "moveDown": "Move later"
+  },
+  "adminStorage": {
+    "title": "Resource monitor",
+    "intro": "How much disk space your photos, site images, and database are using right now.",
+    "totalLabel": "Total",
+    "photosLabel": "Event photos",
+    "siteImagesLabel": "Site images",
+    "databaseLabel": "Database",
+    "eventsTitle": "Storage by event",
+    "eventsHint": "Largest events first — the original plus thumbnail/medium/full renditions of every photo.",
+    "noEvents": "No events yet.",
+    "untitledEvent": "Untitled event",
+    "photoCount": "{count, plural, =1 {1 photo} other {# photos}}",
+    "shareOfPhotos": "{pct}% of photo storage"
   },
   "gallery": {
     "title": "Gallery",

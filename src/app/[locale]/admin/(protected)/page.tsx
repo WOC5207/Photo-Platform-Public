@@ -54,6 +54,15 @@ export default async function AdminDashboardPage() {
           <h2 className="text-lg font-semibold">{t("site")}</h2>
           <p className="mt-1 text-sm text-fg-subtle">{t("siteCardHint")}</p>
         </Link>
+        <Link
+          href="/admin/storage"
+          className="rounded-xl border border-border bg-surface p-6 transition hover:border-border-strong"
+        >
+          <h2 className="text-lg font-semibold">{t("resourceMonitor")}</h2>
+          <p className="mt-1 text-sm text-fg-subtle">
+            {t("resourceMonitorCardHint")}
+          </p>
+        </Link>
       </div>
     </div>
   );
