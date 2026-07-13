@@ -1,5 +1,4 @@
 import { getTranslations, getLocale } from "next-intl/server";
-import { Link } from "@/i18n/navigation";
 import { prisma } from "@/lib/db";
 import { pickText, formatCredits } from "@/lib/content";
 import { photoUrls } from "@/lib/images";
@@ -14,6 +13,9 @@ import {
 import EventPhotoStream, {
   type StreamEvent
 } from "@/components/EventPhotoStream";
+import HeroEventsPanel, {
+  type HeroHighlightEvent
+} from "@/components/HeroEventsPanel";
 import BookingCalendar, {
   type CalendarSession
 } from "@/components/BookingCalendar";
@@ -45,6 +47,7 @@ export default async function HomePage() {
       where: { published: true },
       orderBy: [{ dateStart: "desc" }, { createdAt: "desc" }],
       include: {
+        coverPhoto: true,
         photos: {
           orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
           include: { credits: { orderBy: { sortOrder: "asc" } } }
@@ -116,30 +119,36 @@ export default async function HomePage() {
       }))
     }));
 
+  // The hero panel highlights a handful of events by their admin-selected
+  // cover photo (same one used on the gallery listing) rather than
+  // duplicating the full per-event photo stream shown below in "Recent
+  // work" — events without a resolvable photo are skipped, not shown as an
+  // empty tile.
+  const highlightEvents: HeroHighlightEvent[] = events
+    .flatMap((e) => {
+      const cover = e.coverPhoto ?? e.photos[0] ?? null;
+      if (!cover) return [];
+      return [
+        {
+          slug: e.slug,
+          title: pickText(locale, e.titleEn, e.titleZh),
+          dateLabel: formatDateRange(e.dateStart, e.dateEnd) || null,
+          photoUrl: photoUrls(e.id, cover.id).med
+        }
+      ];
+    })
+    .slice(0, 8);
+
   return (
     <div className="flex flex-col gap-8">
-      <section className="flex flex-col items-center justify-center gap-6 rounded-2xl border border-fg/10 bg-page/85 px-6 py-12 text-center sm:py-16">
-        <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
-          {heroTitle}
-        </h1>
-        <p className="max-w-xl text-lg text-fg-subtle">{heroSubtitle}</p>
-        <div className="flex flex-wrap items-center justify-center gap-3">
-          <Link
-            href="/gallery"
-            className="rounded-full bg-fg px-6 py-3 text-sm font-semibold text-page transition hover:opacity-90"
-          >
-            {t("browseGallery")}
-          </Link>
-          {settings.bookingEnabled && (
-            <Link
-              href="/booking"
-              className="rounded-full border border-border-strong px-6 py-3 text-sm font-semibold text-fg-muted transition hover:border-fg-faint hover:text-fg"
-            >
-              {t("bookingButton")}
-            </Link>
-          )}
-        </div>
-      </section>
+      <HeroEventsPanel
+        title={heroTitle}
+        subtitle={heroSubtitle}
+        browseLabel={t("browseGallery")}
+        bookingLabel={t("bookingButton")}
+        bookingEnabled={settings.bookingEnabled}
+        events={highlightEvents}
+      />
 
       <div className="grid gap-8 lg:grid-cols-[1fr_320px] lg:items-start">
         <section className="flex flex-col gap-6 rounded-2xl border border-fg/10 bg-page/85 p-6 sm:p-8">
