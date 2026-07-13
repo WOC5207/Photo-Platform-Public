@@ -79,6 +79,12 @@ export default async function AdminLayout({
               >
                 {t("admin.site")}
               </Link>
+              <Link
+                href="/admin/storage"
+                className="text-fg-muted hover:text-fg"
+              >
+                {t("admin.resourceMonitor")}
+              </Link>
             </nav>
           </div>
           <div className="flex items-center gap-4">

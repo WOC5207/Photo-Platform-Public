@@ -66,7 +66,9 @@
     "bookingsCardHint": "创建可预约活动并管理预约。",
     "creditsCardHint": "管理已记住的署名及其社交主页链接。",
     "site": "网站设置",
-    "siteCardHint": "自定义站点标题、首页文案、背景和 Logo。"
+    "siteCardHint": "自定义站点标题、首页文案、背景和 Logo。",
+    "resourceMonitor": "资源监控",
+    "resourceMonitorCardHint": "查看照片、网站图片和数据库占用的存储空间。"
   },
   "adminEvents": {
     "listTitle": "相册管理",
@@ -211,6 +213,20 @@
     "confirmDeletePersonalLink": "删除这个个人链接？",
     "moveUp": "提前",
     "moveDown": "延后"
+  },
+  "adminStorage": {
+    "title": "资源监控",
+    "intro": "照片、网站图片和数据库当前占用的磁盘空间。",
+    "totalLabel": "总计",
+    "photosLabel": "活动照片",
+    "siteImagesLabel": "网站图片",
+    "databaseLabel": "数据库",
+    "eventsTitle": "按活动统计存储",
+    "eventsHint": "按占用空间从大到小排列——包含每张照片的原图及缩略图/中图/大图三种尺寸。",
+    "noEvents": "还没有活动。",
+    "untitledEvent": "未命名活动",
+    "photoCount": "{count} 张照片",
+    "shareOfPhotos": "占照片存储的 {pct}%"
   },
   "gallery": {
     "title": "作品集",
