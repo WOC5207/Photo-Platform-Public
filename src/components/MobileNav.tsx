@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "@/i18n/navigation";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import ThemeToggle from "@/components/ThemeToggle";
+import ContactUsButton, { type ContactUsLabels } from "@/components/ContactUsButton";
 
 export interface MobileNavLabels {
   gallery: string;
@@ -11,14 +12,19 @@ export interface MobileNavLabels {
   admin: string;
   menu: string;
   toggleTheme: string;
+  contact: string;
 }
 
 export default function MobileNav({
   labels,
-  showBooking = true
+  showBooking = true,
+  showContact = false,
+  contact
 }: {
   labels: MobileNavLabels;
   showBooking?: boolean;
+  showContact?: boolean;
+  contact?: { title: string; url: string; qrUrl: string; labels: ContactUsLabels };
 }) {
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -72,6 +78,15 @@ export default function MobileNav({
             <Link href="/booking" onClick={() => setOpen(false)} className={linkClass}>
               {labels.booking}
             </Link>
+          )}
+          {showContact && contact && (
+            <ContactUsButton
+              title={contact.title}
+              url={contact.url}
+              qrUrl={contact.qrUrl}
+              labels={contact.labels}
+              className={`${linkClass} text-left`}
+            />
           )}
           <Link href="/admin" onClick={() => setOpen(false)} className={linkClass}>
             {labels.admin}

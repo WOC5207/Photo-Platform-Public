@@ -34,7 +34,11 @@ const settingsSchema = z.object({
     .regex(/^(#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}))?$/),
   bookingEnabled: z.boolean(),
   lotteryEnabled: z.boolean(),
-  creditProfilesEnabled: z.boolean()
+  creditProfilesEnabled: z.boolean(),
+  contactEnabled: z.boolean(),
+  contactTitleEn: z.string().trim().max(120),
+  contactTitleZh: z.string().trim().max(120),
+  contactUrl: z.string().trim().max(500)
 });
 
 export async function updateSiteSettings(
@@ -57,7 +61,11 @@ export async function updateSiteSettings(
     backgroundColor: formData.get("backgroundColor") ?? "",
     bookingEnabled: formData.get("bookingEnabled") === "on",
     lotteryEnabled: formData.get("lotteryEnabled") === "on",
-    creditProfilesEnabled: formData.get("creditProfilesEnabled") === "on"
+    creditProfilesEnabled: formData.get("creditProfilesEnabled") === "on",
+    contactEnabled: formData.get("contactEnabled") === "on",
+    contactTitleEn: formData.get("contactTitleEn") ?? "",
+    contactTitleZh: formData.get("contactTitleZh") ?? "",
+    contactUrl: formData.get("contactUrl") ?? ""
   });
   if (!parsed.success) return { error: "validation" };
   const d = parsed.data;
@@ -79,7 +87,11 @@ export async function updateSiteSettings(
       backgroundColor: d.backgroundColor,
       bookingEnabled: d.bookingEnabled,
       lotteryEnabled: d.lotteryEnabled,
-      creditProfilesEnabled: d.creditProfilesEnabled
+      creditProfilesEnabled: d.creditProfilesEnabled,
+      contactEnabled: d.contactEnabled,
+      contactTitleEn: d.contactTitleEn,
+      contactTitleZh: d.contactTitleZh,
+      contactUrl: d.contactUrl
     },
     update: {
       siteTitleEn: d.siteTitleEn,
@@ -95,7 +107,11 @@ export async function updateSiteSettings(
       backgroundColor: d.backgroundColor,
       bookingEnabled: d.bookingEnabled,
       lotteryEnabled: d.lotteryEnabled,
-      creditProfilesEnabled: d.creditProfilesEnabled
+      creditProfilesEnabled: d.creditProfilesEnabled,
+      contactEnabled: d.contactEnabled,
+      contactTitleEn: d.contactTitleEn,
+      contactTitleZh: d.contactTitleZh,
+      contactUrl: d.contactUrl
     }
   });
 
@@ -290,19 +306,26 @@ export async function moveContactMethod(formData: FormData): Promise<void> {
   revalidatePath("/", "layout");
 }
 
+const SITE_IMAGE_COLUMN = {
+  background: "backgroundImage",
+  logo: "logo",
+  contactQr: "contactQrImage"
+} as const;
+
 export async function removeSiteImage(
-  kind: "background" | "logo"
+  kind: "background" | "logo" | "contactQr"
 ): Promise<void> {
   if (!(await isAdmin())) return;
 
+  const column = SITE_IMAGE_COLUMN[kind];
   const existing = await prisma.siteSettings.findUnique({
     where: { id: SITE_SETTINGS_ID },
-    select: { backgroundImage: true, logo: true }
+    select: { backgroundImage: true, logo: true, contactQrImage: true }
   });
-  const token = kind === "background" ? existing?.backgroundImage : existing?.logo;
+  const token = existing?.[column];
   if (token) await deleteSiteImageFile(token);
 
-  const cleared = kind === "background" ? { backgroundImage: "" } : { logo: "" };
+  const cleared = { [column]: "" };
   await prisma.siteSettings.upsert({
     where: { id: SITE_SETTINGS_ID },
     create: { id: SITE_SETTINGS_ID, ...cleared },

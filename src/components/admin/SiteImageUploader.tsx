@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { removeSiteImage } from "@/app/[locale]/admin/(protected)/settings/actions";
 
-type Kind = "background" | "logo";
+type Kind = "background" | "logo" | "contactQr";
 
 const LABELS: Record<
   Kind,
@@ -26,6 +26,14 @@ const LABELS: Record<
     remove: "removeLogo",
     none: "noLogo",
     error: "uploadLogoError"
+  },
+  contactQr: {
+    section: "contactQrSection",
+    hint: "contactQrHint",
+    upload: "uploadContactQr",
+    remove: "removeContactQr",
+    none: "noContactQr",
+    error: "uploadContactQrError"
   }
 };
 
@@ -67,7 +75,9 @@ export default function SiteImageUploader({
   const previewCls =
     kind === "logo"
       ? "h-16 w-auto max-w-[12rem] rounded-lg border border-border bg-page object-contain p-2"
-      : "h-32 w-56 rounded-lg border border-border object-cover";
+      : kind === "contactQr"
+        ? "h-32 w-32 rounded-lg border border-border bg-page object-contain p-2"
+        : "h-32 w-56 rounded-lg border border-border object-cover";
 
   return (
     <section className="flex flex-col gap-3 border-t border-border pt-6">

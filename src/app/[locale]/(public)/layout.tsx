@@ -5,7 +5,8 @@ import LanguageSwitcher from "@/components/LanguageSwitcher";
 import MobileNav from "@/components/MobileNav";
 import ThemeToggle from "@/components/ThemeToggle";
 import ScrollBlurBackground from "@/components/ScrollBlurBackground";
-import { getSiteSettings, resolveSiteTitle } from "@/lib/settings";
+import ContactUsButton from "@/components/ContactUsButton";
+import { getSiteSettings, resolveContactTitle, resolveSiteTitle } from "@/lib/settings";
 import { siteImageUrl } from "@/lib/images";
 
 export default async function PublicLayout({
@@ -20,6 +21,15 @@ export default async function PublicLayout({
   const siteTitle = resolveSiteTitle(settings, locale, t("common.siteName"));
   const bgImage = siteImageUrl(settings.backgroundImage);
   const logoUrl = siteImageUrl(settings.logo);
+  const contactQrUrl = siteImageUrl(settings.contactQrImage);
+  const showContact =
+    settings.contactEnabled && (settings.contactUrl || contactQrUrl);
+  const contactTitle = resolveContactTitle(settings, locale, t("nav.contact"));
+  const contactLabels = {
+    button: t("nav.contact"),
+    close: t("common.close"),
+    visitLink: t("nav.contactVisitLink")
+  };
 
   // Admin-customizable background: a color and/or a full-page image, scoped to
   // the public site so admin screens keep their standard look. Rendered via
@@ -60,6 +70,15 @@ export default async function PublicLayout({
             )}
             <LanguageSwitcher />
             <ThemeToggle label={t("common.toggleTheme")} />
+            {showContact && (
+              <ContactUsButton
+                title={contactTitle}
+                url={settings.contactUrl}
+                qrUrl={contactQrUrl}
+                labels={contactLabels}
+                className="rounded-lg border border-border-strong px-3 py-1.5 text-fg-muted transition hover:border-fg-faint hover:text-fg"
+              />
+            )}
             <Link
               href="/admin"
               className="rounded-lg border border-border-strong px-3 py-1.5 text-fg-muted transition hover:border-fg-faint hover:text-fg"
@@ -73,17 +92,40 @@ export default async function PublicLayout({
               booking: t("nav.booking"),
               admin: t("nav.admin"),
               menu: t("nav.menu"),
-              toggleTheme: t("common.toggleTheme")
+              toggleTheme: t("common.toggleTheme"),
+              contact: t("nav.contact")
             }}
             showBooking={settings.bookingEnabled}
+            showContact={!!showContact}
+            contact={
+              showContact
+                ? {
+                    title: contactTitle,
+                    url: settings.contactUrl,
+                    qrUrl: contactQrUrl,
+                    labels: contactLabels
+                  }
+                : undefined
+            }
           />
         </div>
       </header>
       <main className="mx-auto my-4 w-full max-w-[1600px] flex-1 px-4 sm:my-8 sm:px-6">
         {children}
       </main>
-      <footer className="border-t border-fg/10 bg-page/70 py-6 text-center text-xs text-fg-subtle backdrop-blur-xl">
-        © {new Date().getFullYear()} {siteTitle}
+      <footer className="flex flex-col items-center justify-center gap-2 border-t border-fg/10 bg-page/70 py-6 text-center text-xs text-fg-subtle backdrop-blur-xl sm:flex-row sm:gap-4">
+        <span>
+          © {new Date().getFullYear()} {siteTitle}
+        </span>
+        {showContact && (
+          <ContactUsButton
+            title={contactTitle}
+            url={settings.contactUrl}
+            qrUrl={contactQrUrl}
+            labels={contactLabels}
+            className="text-fg-muted underline decoration-fg/30 underline-offset-2 transition hover:text-fg"
+          />
+        )}
       </footer>
     </div>
   );

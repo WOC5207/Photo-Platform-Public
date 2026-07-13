@@ -23,6 +23,11 @@ export interface SiteSettings {
   bookingEnabled: boolean;
   lotteryEnabled: boolean;
   creditProfilesEnabled: boolean;
+  contactEnabled: boolean;
+  contactTitleEn: string;
+  contactTitleZh: string;
+  contactUrl: string;
+  contactQrImage: string;
   setupCompleted: boolean;
 }
 
@@ -44,6 +49,11 @@ const DEFAULTS: SiteSettings = {
   bookingEnabled: true,
   lotteryEnabled: true,
   creditProfilesEnabled: true,
+  contactEnabled: false,
+  contactTitleEn: "",
+  contactTitleZh: "",
+  contactUrl: "",
+  contactQrImage: "",
   setupCompleted: false
 };
 
@@ -114,6 +124,15 @@ export function resolveSubjectTerm(
   fallback: string
 ): string {
   return pickText(locale, settings.subjectTermEn, settings.subjectTermZh) || fallback;
+}
+
+/** Same as resolveHomeTitle, for the "Contact us" card heading. */
+export function resolveContactTitle(
+  settings: SiteSettings,
+  locale: string,
+  fallback: string
+): string {
+  return pickText(locale, settings.contactTitleEn, settings.contactTitleZh) || fallback;
 }
 
 /** Admin-configured options for the booking form's contact-method dropdown. */
