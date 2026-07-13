@@ -44,7 +44,14 @@
     "quickStatsTitle": "网站数据",
     "quickStatsPhotos": "照片",
     "quickStatsAlbums": "相册",
-    "personalLinksTitle": "更多平台"
+    "personalLinksTitle": "更多平台",
+    "eventsTab": "精选",
+    "announcementsTab": "公告",
+    "searchPlaceholder": "搜索Coser或角色…",
+    "searching": "搜索中…",
+    "noSearchResults": "没有找到匹配结果。",
+    "noHighlightEvents": "还没有已发布的活动。",
+    "noAnnouncements": "暂无公告。"
   },
   "auth": {
     "loginTitle": "管理员登录",
@@ -218,6 +225,16 @@
     "noPersonalLinks": "还没有添加个人链接。",
     "personalLinkValidationError": "请填写链接地址。",
     "confirmDeletePersonalLink": "删除这个个人链接？",
+    "announcementsSection": "公告",
+    "announcementsHint": "显示在首页面板「公告」标签中的简短通知，按下方顺序排列。",
+    "announcementTitleEn": "标题（English）",
+    "announcementTitleZh": "标题（中文）",
+    "announcementBodyEn": "内容（English，可选）",
+    "announcementBodyZh": "内容（中文，可选）",
+    "addAnnouncement": "添加",
+    "noAnnouncements": "还没有添加公告。",
+    "announcementValidationError": "请填写标题。",
+    "confirmDeleteAnnouncement": "删除这条公告？",
     "moveUp": "提前",
     "moveDown": "延后"
   },

@@ -2,6 +2,7 @@ import { getTranslations, getLocale } from "next-intl/server";
 import { siteImageUrl } from "@/lib/images";
 import {
   getSiteSettings,
+  getAnnouncements,
   getContactMethods,
   getPersonalLinks,
   resolveCreditTerm
@@ -9,6 +10,7 @@ import {
 import SiteSettingsForm from "@/components/admin/SiteSettingsForm";
 import SiteImageUploader from "@/components/admin/SiteImageUploader";
 import PersonalLinksManager from "@/components/admin/PersonalLinksManager";
+import AnnouncementsManager from "@/components/admin/AnnouncementsManager";
 import ContactMethodsManager from "@/components/admin/ContactMethodsManager";
 
 export default async function SiteSettingsPage() {
@@ -18,6 +20,7 @@ export default async function SiteSettingsPage() {
 
   const settings = await getSiteSettings();
   const personalLinks = await getPersonalLinks();
+  const announcements = await getAnnouncements();
   const contactMethods = await getContactMethods();
   const creditTerm = resolveCreditTerm(settings, locale, tc("creditTerm"));
 
@@ -67,6 +70,17 @@ export default async function SiteSettingsPage() {
               labelEn: l.labelEn,
               labelZh: l.labelZh,
               url: l.url
+            }))}
+          />
+        }
+        announcementsSlot={
+          <AnnouncementsManager
+            announcements={announcements.map((a) => ({
+              id: a.id,
+              titleEn: a.titleEn,
+              titleZh: a.titleZh,
+              bodyEn: a.bodyEn,
+              bodyZh: a.bodyZh
             }))}
           />
         }

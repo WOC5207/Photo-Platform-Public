@@ -3,8 +3,10 @@ import { prisma } from "@/lib/db";
 import { pickText, formatCredits } from "@/lib/content";
 import { photoUrls } from "@/lib/images";
 import { formatDate, formatDateRange } from "@/lib/datetime";
+import { Link } from "@/i18n/navigation";
 import {
   getSiteSettings,
+  getAnnouncements,
   getPersonalLinks,
   resolveHomeTitle,
   resolveHomeSubtitle,
@@ -13,9 +15,10 @@ import {
 import EventPhotoStream, {
   type StreamEvent
 } from "@/components/EventPhotoStream";
-import HeroEventsPanel, {
-  type HeroHighlightEvent
-} from "@/components/HeroEventsPanel";
+import HomeHighlightsPanel, {
+  type HighlightEvent,
+  type HighlightAnnouncement
+} from "@/components/HomeHighlightsPanel";
 import BookingCalendar, {
   type CalendarSession
 } from "@/components/BookingCalendar";
@@ -42,7 +45,7 @@ export default async function HomePage() {
   const today = new Date();
   today.setUTCHours(0, 0, 0, 0);
 
-  const [events, bookingEvents, personalLinks] = await Promise.all([
+  const [events, bookingEvents, personalLinks, announcements] = await Promise.all([
     prisma.event.findMany({
       where: { published: true },
       orderBy: [{ dateStart: "desc" }, { createdAt: "desc" }],
@@ -69,7 +72,8 @@ export default async function HomePage() {
           }
         })
       : Promise.resolve([]),
-    getPersonalLinks()
+    getPersonalLinks(),
+    getAnnouncements()
   ]);
 
   // Derived from the already-loaded published events rather than extra count
@@ -119,12 +123,12 @@ export default async function HomePage() {
       }))
     }));
 
-  // The hero panel highlights a handful of events by their admin-selected
+  // The highlights panel shows a handful of events by their admin-selected
   // cover photo (same one used on the gallery listing) rather than
   // duplicating the full per-event photo stream shown below in "Recent
   // work" — events without a resolvable photo are skipped, not shown as an
   // empty tile.
-  const highlightEvents: HeroHighlightEvent[] = events
+  const highlightEvents: HighlightEvent[] = events
     .flatMap((e) => {
       const cover = e.coverPhoto ?? e.photos[0] ?? null;
       if (!cover) return [];
@@ -139,15 +143,50 @@ export default async function HomePage() {
     })
     .slice(0, 8);
 
+  const announcementItems: HighlightAnnouncement[] = announcements.map((a) => ({
+    id: a.id,
+    title: pickText(locale, a.titleEn, a.titleZh),
+    body: pickText(locale, a.bodyEn, a.bodyZh)
+  }));
+
   return (
     <div className="flex flex-col gap-8">
-      <HeroEventsPanel
-        title={heroTitle}
-        subtitle={heroSubtitle}
-        browseLabel={t("browseGallery")}
-        bookingLabel={t("bookingButton")}
-        bookingEnabled={settings.bookingEnabled}
+      <div className="flex flex-col items-start gap-4 px-2 text-left">
+        <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
+          {heroTitle}
+        </h1>
+        <p className="text-lg text-fg-subtle">{heroSubtitle}</p>
+        <div className="flex flex-wrap items-center gap-3">
+          <Link
+            href="/gallery"
+            className="rounded-full bg-fg px-6 py-3 text-sm font-semibold text-page transition hover:opacity-90"
+          >
+            {t("browseGallery")}
+          </Link>
+          {settings.bookingEnabled && (
+            <Link
+              href="/booking"
+              className="rounded-full border border-border-strong px-6 py-3 text-sm font-semibold text-fg-muted transition hover:border-fg-faint hover:text-fg"
+            >
+              {t("bookingButton")}
+            </Link>
+          )}
+        </div>
+      </div>
+
+      <HomeHighlightsPanel
+        locale={locale}
         events={highlightEvents}
+        announcements={announcementItems}
+        labels={{
+          eventsTab: t("eventsTab"),
+          announcementsTab: t("announcementsTab"),
+          searchPlaceholder: t("searchPlaceholder"),
+          searching: t("searching"),
+          noResults: t("noSearchResults"),
+          noEvents: t("noHighlightEvents"),
+          noAnnouncements: t("noAnnouncements")
+        }}
       />
 
       <div className="grid gap-8 lg:grid-cols-[1fr_320px] lg:items-start">

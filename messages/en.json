@@ -44,7 +44,14 @@
     "quickStatsTitle": "By the numbers",
     "quickStatsPhotos": "Photos",
     "quickStatsAlbums": "Albums",
-    "personalLinksTitle": "Find me elsewhere"
+    "personalLinksTitle": "Find me elsewhere",
+    "eventsTab": "Highlights",
+    "announcementsTab": "Announcements",
+    "searchPlaceholder": "Search a cosplayer or character…",
+    "searching": "Searching…",
+    "noSearchResults": "No matches found.",
+    "noHighlightEvents": "No published events yet.",
+    "noAnnouncements": "No announcements right now."
   },
   "auth": {
     "loginTitle": "Admin login",
@@ -218,6 +225,16 @@
     "noPersonalLinks": "No personal links yet.",
     "personalLinkValidationError": "Please enter a link URL.",
     "confirmDeletePersonalLink": "Delete this personal link?",
+    "announcementsSection": "Announcements",
+    "announcementsHint": "Short notices shown in the homepage panel's Announcements tab, in the order listed below.",
+    "announcementTitleEn": "Title (English)",
+    "announcementTitleZh": "Title (中文)",
+    "announcementBodyEn": "Body (English, optional)",
+    "announcementBodyZh": "Body (中文，可选)",
+    "addAnnouncement": "Add",
+    "noAnnouncements": "No announcements yet.",
+    "announcementValidationError": "Please enter a title.",
+    "confirmDeleteAnnouncement": "Delete this announcement?",
     "moveUp": "Move earlier",
     "moveDown": "Move later"
   },

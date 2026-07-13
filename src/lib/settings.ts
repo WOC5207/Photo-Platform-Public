@@ -169,6 +169,13 @@ export const getPersonalLinks = cache(async () => {
   });
 });
 
+/** Admin-authored notices shown in the homepage panel's Announcements tab. */
+export const getAnnouncements = cache(async () => {
+  return prisma.announcement.findMany({
+    orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }]
+  });
+});
+
 /**
  * Remembered credited-person social-link profiles (see syncCreditProfiles in
  * src/lib/photoCredits.ts), used to prefill the photo-credit editors so the

@@ -310,6 +310,105 @@ export async function moveContactMethod(formData: FormData): Promise<void> {
   revalidatePath("/", "layout");
 }
 
+export type AnnouncementState = { error?: "validation"; ok?: boolean };
+
+const announcementSchema = z
+  .object({
+    titleEn: z.string().trim().max(120),
+    titleZh: z.string().trim().max(120),
+    bodyEn: z.string().trim().max(2000),
+    bodyZh: z.string().trim().max(2000)
+  })
+  .refine((d) => d.titleEn.length > 0 || d.titleZh.length > 0);
+
+function parseAnnouncementForm(formData: FormData) {
+  return announcementSchema.safeParse({
+    titleEn: formData.get("titleEn") ?? "",
+    titleZh: formData.get("titleZh") ?? "",
+    bodyEn: formData.get("bodyEn") ?? "",
+    bodyZh: formData.get("bodyZh") ?? ""
+  });
+}
+
+export async function addAnnouncement(
+  _prev: AnnouncementState,
+  formData: FormData
+): Promise<AnnouncementState> {
+  await guard();
+  const parsed = parseAnnouncementForm(formData);
+  if (!parsed.success) return { error: "validation" };
+  const d = parsed.data;
+
+  const maxOrder = await prisma.announcement.aggregate({
+    _max: { sortOrder: true }
+  });
+  await prisma.announcement.create({
+    data: {
+      titleEn: d.titleEn,
+      titleZh: d.titleZh,
+      bodyEn: d.bodyEn,
+      bodyZh: d.bodyZh,
+      sortOrder: (maxOrder._max.sortOrder ?? 0) + 1
+    }
+  });
+
+  revalidatePath("/", "layout");
+  return { ok: true };
+}
+
+export async function updateAnnouncement(formData: FormData): Promise<void> {
+  await guard();
+  const id = formData.get("id");
+  if (typeof id !== "string") return;
+  const parsed = parseAnnouncementForm(formData);
+  if (!parsed.success) return;
+  const d = parsed.data;
+
+  await prisma.announcement
+    .update({
+      where: { id },
+      data: { titleEn: d.titleEn, titleZh: d.titleZh, bodyEn: d.bodyEn, bodyZh: d.bodyZh }
+    })
+    .catch(() => {});
+  revalidatePath("/", "layout");
+}
+
+export async function deleteAnnouncement(formData: FormData): Promise<void> {
+  await guard();
+  const id = formData.get("id");
+  if (typeof id !== "string") return;
+  await prisma.announcement.delete({ where: { id } }).catch(() => {});
+  revalidatePath("/", "layout");
+}
+
+export async function moveAnnouncement(formData: FormData): Promise<void> {
+  await guard();
+  const id = formData.get("id");
+  const direction = formData.get("direction");
+  if (typeof id !== "string" || (direction !== "up" && direction !== "down"))
+    return;
+
+  await prisma.$transaction(async (tx) => {
+    const items = await tx.announcement.findMany({
+      orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
+      select: { id: true }
+    });
+    const index = items.findIndex((a) => a.id === id);
+    const swapWith = direction === "up" ? index - 1 : index + 1;
+    if (index < 0 || swapWith < 0 || swapWith >= items.length) return;
+
+    const order = items.map((a) => a.id);
+    [order[index], order[swapWith]] = [order[swapWith], order[index]];
+    for (let i = 0; i < order.length; i++) {
+      await tx.announcement.update({
+        where: { id: order[i] },
+        data: { sortOrder: i + 1 }
+      });
+    }
+  });
+  revalidatePath("/", "layout");
+}
+
 const SITE_IMAGE_COLUMN = {
   background: "backgroundImage",
   logo: "logo",

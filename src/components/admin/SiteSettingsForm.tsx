@@ -46,6 +46,7 @@ export default function SiteSettingsForm({
   logoSlot,
   backgroundImageSlot,
   personalLinksSlot,
+  announcementsSlot,
   contactQrEnSlot,
   contactQrZhSlot,
   contactMethodsSlot
@@ -79,6 +80,7 @@ export default function SiteSettingsForm({
   logoSlot: ReactNode;
   backgroundImageSlot: ReactNode;
   personalLinksSlot: ReactNode;
+  announcementsSlot: ReactNode;
   contactQrEnSlot: ReactNode;
   contactQrZhSlot: ReactNode;
   contactMethodsSlot: ReactNode;
@@ -206,6 +208,7 @@ export default function SiteSettingsForm({
           </label>
         </div>
         {personalLinksSlot}
+        {announcementsSlot}
       </Group>
 
       {/* Contact us: header + footer button and modal */}
