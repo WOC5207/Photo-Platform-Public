@@ -192,9 +192,11 @@ export default async function HomePage() {
         events={highlightEvents}
         announcements={announcementItems}
         labels={{
-          announcementsHeading: t("announcementsHeading"),
-          highlightsHeading: t("highlightsHeading"),
-          noHighlightEvents: t("noHighlightEvents")
+          announcementsTab: t("announcementsTab"),
+          noAnnouncements: t("noAnnouncements"),
+          viewGallery: t("viewGallery"),
+          carouselPrevious: t("carouselPrevious"),
+          carouselNext: t("carouselNext")
         }}
       />
 

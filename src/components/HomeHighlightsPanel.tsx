@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import { Link } from "@/i18n/navigation";
 
 export interface HighlightPhoto {
@@ -19,18 +22,97 @@ export interface HighlightAnnouncement {
 }
 
 export interface HomeHighlightsLabels {
-  announcementsHeading: string;
-  highlightsHeading: string;
-  noHighlightEvents: string;
+  announcementsTab: string;
+  noAnnouncements: string;
+  viewGallery: string;
+  carouselPrevious: string;
+  carouselNext: string;
+}
+
+const tabCls = (active: boolean) =>
+  `shrink-0 truncate whitespace-nowrap rounded-lg px-3 py-2 text-left text-sm font-medium transition ${
+    active ? "bg-fg text-page" : "text-fg-muted hover:bg-fg/5 hover:text-fg"
+  }`;
+
+/** One event's photos, paged through with prev/next arrows and dot indicators. */
+function EventCarousel({
+  event,
+  labels
+}: {
+  event: HighlightEventGroup;
+  labels: HomeHighlightsLabels;
+}) {
+  const [index, setIndex] = useState(0);
+  const photo = event.photos[index];
+  const hasMultiple = event.photos.length > 1;
+
+  return (
+    <div className="flex flex-col gap-3">
+      <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl bg-surface sm:aspect-video">
+        <Link href={`/gallery/${event.slug}`} className="block h-full w-full">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={photo.url}
+            alt={event.title}
+            className="h-full w-full object-cover"
+          />
+        </Link>
+        {hasMultiple && (
+          <>
+            <button
+              type="button"
+              onClick={() =>
+                setIndex(
+                  (i) => (i - 1 + event.photos.length) % event.photos.length
+                )
+              }
+              aria-label={labels.carouselPrevious}
+              className="absolute left-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-page/80 text-lg text-fg shadow-lg backdrop-blur transition hover:bg-page"
+            >
+              ‹
+            </button>
+            <button
+              type="button"
+              onClick={() => setIndex((i) => (i + 1) % event.photos.length)}
+              aria-label={labels.carouselNext}
+              className="absolute right-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-page/80 text-lg text-fg shadow-lg backdrop-blur transition hover:bg-page"
+            >
+              ›
+            </button>
+          </>
+        )}
+      </div>
+
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-2">
+          {event.photos.map((p, i) => (
+            <button
+              key={p.id}
+              type="button"
+              onClick={() => setIndex(i)}
+              aria-label={String(i + 1)}
+              className={`h-2 w-2 rounded-full transition ${
+                i === index ? "bg-fg" : "bg-fg/20 hover:bg-fg/40"
+              }`}
+            />
+          ))}
+        </div>
+        <Link
+          href={`/gallery/${event.slug}`}
+          className="rounded-full border border-border-strong px-4 py-1.5 text-xs font-semibold text-fg-muted transition hover:border-fg-faint hover:text-fg"
+        >
+          {labels.viewGallery}
+        </Link>
+      </div>
+    </div>
+  );
 }
 
 /**
- * Homepage panel: admin announcements pinned at the top (shown only when
- * there are any — not an empty placeholder that's always there), followed
- * by event highlights grouped per event, each its own small heading + photo
- * strip. No interactivity here anymore (search moved out to HomeSearchBox,
- * and there's no tab to switch — announcements are always visible rather
- * than something you navigate to), so this can be a plain server component.
+ * Homepage panel: a left-side tab switcher — "Announcement" (default,
+ * always first) plus one tab per highlighted event — with the content pane
+ * showing either the announcements list or a photo carousel for whichever
+ * event tab is active.
  */
 export default function HomeHighlightsPanel({
   events,
@@ -41,68 +123,63 @@ export default function HomeHighlightsPanel({
   announcements: HighlightAnnouncement[];
   labels: HomeHighlightsLabels;
 }) {
-  return (
-    <section className="flex flex-col gap-8 overflow-hidden rounded-2xl border border-fg/10 bg-page/85 p-6 sm:p-8">
-      {announcements.length > 0 && (
-        <div className="flex flex-col gap-3">
-          <h2 className="text-lg font-bold">{labels.announcementsHeading}</h2>
-          <ul className="flex flex-col gap-3">
-            {announcements.map((a) => (
-              <li
-                key={a.id}
-                className="rounded-xl border border-fg/10 bg-surface p-3"
-              >
-                <p className="font-semibold">{a.title}</p>
-                {a.body && (
-                  <p className="mt-1 whitespace-pre-line text-sm text-fg-subtle">
-                    {a.body}
-                  </p>
-                )}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+  const [activeTab, setActiveTab] = useState<string>("announcements");
+  const activeEvent = events.find((e) => e.slug === activeTab);
 
-      <div className="flex flex-col gap-6">
-        <h2 className="text-lg font-bold">{labels.highlightsHeading}</h2>
-        {events.length > 0 ? (
-          events.map((event) => (
-            <div key={event.slug} className="flex flex-col gap-3">
-              <Link
-                href={`/gallery/${event.slug}`}
-                className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 hover:underline"
-              >
-                <span className="font-semibold">{event.title}</span>
-                {event.dateLabel && (
-                  <span className="shrink-0 text-xs text-fg-subtle">
-                    {event.dateLabel}
-                  </span>
-                )}
-              </Link>
-              <ul className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                {event.photos.map((photo) => (
-                  <li key={photo.id}>
-                    <Link
-                      href={`/gallery/${event.slug}`}
-                      className="group block aspect-square overflow-hidden rounded-xl bg-surface"
-                    >
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={photo.url}
-                        alt=""
-                        loading="lazy"
-                        className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
-                      />
-                    </Link>
+  return (
+    <section className="overflow-hidden rounded-2xl border border-fg/10 bg-page/85">
+      <div className="flex flex-col gap-6 p-6 sm:p-8 lg:flex-row lg:gap-8">
+        <div className="flex shrink-0 gap-2 overflow-x-auto lg:w-48 lg:flex-col lg:overflow-visible">
+          <button
+            type="button"
+            onClick={() => setActiveTab("announcements")}
+            className={tabCls(activeTab === "announcements")}
+          >
+            {labels.announcementsTab}
+          </button>
+          {events.map((event) => (
+            <button
+              key={event.slug}
+              type="button"
+              onClick={() => setActiveTab(event.slug)}
+              className={tabCls(activeTab === event.slug)}
+            >
+              {event.title}
+            </button>
+          ))}
+        </div>
+
+        <div className="min-w-0 flex-1">
+          {activeTab === "announcements" ? (
+            announcements.length > 0 ? (
+              <ul className="flex flex-col gap-3">
+                {announcements.map((a) => (
+                  <li
+                    key={a.id}
+                    className="rounded-xl border border-fg/10 bg-surface p-3"
+                  >
+                    <p className="font-semibold">{a.title}</p>
+                    {a.body && (
+                      <p className="mt-1 whitespace-pre-line text-sm text-fg-subtle">
+                        {a.body}
+                      </p>
+                    )}
                   </li>
                 ))}
               </ul>
-            </div>
-          ))
-        ) : (
-          <p className="text-sm text-fg-subtle">{labels.noHighlightEvents}</p>
-        )}
+            ) : (
+              <p className="text-sm text-fg-subtle">{labels.noAnnouncements}</p>
+            )
+          ) : (
+            activeEvent && (
+              <EventCarousel
+                key={activeEvent.slug}
+                event={activeEvent}
+                labels={labels}
+              />
+            )
+          )}
+        </div>
       </div>
     </section>
   );
