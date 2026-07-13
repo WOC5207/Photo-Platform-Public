@@ -9,7 +9,6 @@ import {
   getAnnouncements,
   getPersonalLinks,
   resolveHomeTitle,
-  resolveHomeSubtitle,
   resolveCreditTerm
 } from "@/lib/settings";
 import EventPhotoStream, {
@@ -19,6 +18,7 @@ import HomeHighlightsPanel, {
   type HighlightEvent,
   type HighlightAnnouncement
 } from "@/components/HomeHighlightsPanel";
+import HomeSearchBox from "@/components/HomeSearchBox";
 import BookingCalendar, {
   type CalendarSession
 } from "@/components/BookingCalendar";
@@ -38,7 +38,6 @@ export default async function HomePage() {
   const settings = await getSiteSettings();
 
   const heroTitle = resolveHomeTitle(settings, locale, t("title"));
-  const heroSubtitle = resolveHomeSubtitle(settings, locale, t("subtitle"));
   const creditTerm = resolveCreditTerm(settings, locale, tc("creditTerm"));
   const creditsLabel = locale === "zh" ? creditTerm : `${creditTerm}s`;
 
@@ -151,39 +150,46 @@ export default async function HomePage() {
 
   return (
     <div className="flex flex-col gap-8">
-      <div className="flex flex-col items-start gap-4 px-2 text-left">
-        <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
-          {heroTitle}
-        </h1>
-        <p className="text-lg text-fg-subtle">{heroSubtitle}</p>
-        <div className="flex flex-wrap items-center gap-3">
-          <Link
-            href="/gallery"
-            className="rounded-full bg-fg px-6 py-3 text-sm font-semibold text-page transition hover:opacity-90"
-          >
-            {t("browseGallery")}
-          </Link>
-          {settings.bookingEnabled && (
+      <div className="flex flex-col gap-6 px-2 lg:flex-row lg:items-center lg:justify-between lg:gap-10">
+        <div className="flex flex-col items-start gap-4">
+          <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
+            {heroTitle}
+          </h1>
+          <div className="flex flex-wrap items-center gap-3">
             <Link
-              href="/booking"
-              className="rounded-full border border-border-strong px-6 py-3 text-sm font-semibold text-fg-muted transition hover:border-fg-faint hover:text-fg"
+              href="/gallery"
+              className="rounded-full bg-fg px-5 py-2.5 text-sm font-semibold text-page transition hover:opacity-90"
             >
-              {t("bookingButton")}
+              {t("browseGallery")}
             </Link>
-          )}
+            {settings.bookingEnabled && (
+              <Link
+                href="/booking"
+                className="rounded-full border border-border-strong px-5 py-2.5 text-sm font-semibold text-fg-muted transition hover:border-fg-faint hover:text-fg"
+              >
+                {t("bookingButton")}
+              </Link>
+            )}
+          </div>
         </div>
+
+        <HomeSearchBox
+          locale={locale}
+          className="w-full lg:w-[26rem] lg:shrink-0"
+          labels={{
+            placeholder: t("searchPlaceholder"),
+            searching: t("searching"),
+            noResults: t("noSearchResults")
+          }}
+        />
       </div>
 
       <HomeHighlightsPanel
-        locale={locale}
         events={highlightEvents}
         announcements={announcementItems}
         labels={{
           eventsTab: t("eventsTab"),
           announcementsTab: t("announcementsTab"),
-          searchPlaceholder: t("searchPlaceholder"),
-          searching: t("searching"),
-          noResults: t("noSearchResults"),
           noEvents: t("noHighlightEvents"),
           noAnnouncements: t("noAnnouncements")
         }}
