@@ -4,6 +4,11 @@ A self-hosted, bilingual (简体中文 / English) photography portfolio and phot
 booking site, designed to run on a Synology NAS via Container Manager (or any
 Docker host).
 
+> **Deploying to a Synology NAS?** The
+> [step-by-step guide below](#deploying-on-a-synology-nas-dsm-72-container-manager)
+> covers the basics; **[docs/DEPLOY_SYNOLOGY.md](docs/DEPLOY_SYNOLOGY.md)**
+> goes further, including connecting a custom domain with HTTPS end to end.
+
 ## Features
 
 - **Photo gallery** grouped by event/album: bulk upload, reordering, per-language
@@ -122,6 +127,11 @@ public URL (`APP_BASE_URL`).
 3. Set `APP_BASE_URL` in `.env` to `https://photos.example.com`, then in
    Container Manager select the project → **Action → Build/Recreate** so the
    new value is picked up.
+
+Don't have a domain pointed at the NAS yet, or unsure how DDNS, port
+forwarding and Let's Encrypt fit together? See
+**[docs/DEPLOY_SYNOLOGY.md](docs/DEPLOY_SYNOLOGY.md)** for the full
+walkthrough, including connecting a custom domain end to end.
 
 ### 6. Backups (do this!)
 
