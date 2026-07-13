@@ -47,7 +47,8 @@ export default async function SiteSettingsPage() {
           contactEnabled: settings.contactEnabled,
           contactTitleEn: settings.contactTitleEn,
           contactTitleZh: settings.contactTitleZh,
-          contactUrl: settings.contactUrl
+          contactUrlEn: settings.contactUrlEn,
+          contactUrlZh: settings.contactUrlZh
         }}
         creditTerm={creditTerm}
         logoSlot={
@@ -69,10 +70,16 @@ export default async function SiteSettingsPage() {
             }))}
           />
         }
-        contactQrSlot={
+        contactQrEnSlot={
           <SiteImageUploader
-            kind="contactQr"
-            currentUrl={siteImageUrl(settings.contactQrImage)}
+            kind="contactQrEn"
+            currentUrl={siteImageUrl(settings.contactQrImageEn)}
+          />
+        }
+        contactQrZhSlot={
+          <SiteImageUploader
+            kind="contactQrZh"
+            currentUrl={siteImageUrl(settings.contactQrImageZh)}
           />
         }
         contactMethodsSlot={
