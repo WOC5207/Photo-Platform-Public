@@ -7,7 +7,7 @@ import { isAdmin } from "@/lib/auth";
 import { Link } from "@/i18n/navigation";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import ThemeToggle from "@/components/ThemeToggle";
-import { getSiteSettings, resolveCreditTerm } from "@/lib/settings";
+import { getSiteSettings, resolveCreditTerm, resolveSiteTitle } from "@/lib/settings";
 import { siteImageUrl } from "@/lib/images";
 import { logout } from "../login/actions";
 
@@ -25,6 +25,7 @@ export default async function AdminLayout({
   const settings = await getSiteSettings();
   if (!settings.setupCompleted) redirect(`/${locale}/admin/setup`);
   const logoUrl = siteImageUrl(settings.logo);
+  const siteTitle = resolveSiteTitle(settings, locale, t("common.siteName"));
   const creditTerm = resolveCreditTerm(settings, locale, t("common.creditTerm"));
 
   return (
@@ -32,16 +33,20 @@ export default async function AdminLayout({
       <header className="border-b border-border bg-surface">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-3">
           <div className="flex flex-wrap items-center gap-4">
-            {logoUrl && (
-              <Link
-                href="/"
-                aria-label={t("common.backToHome")}
-                className="flex shrink-0 items-center"
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
+            <Link
+              href="/"
+              aria-label={t("common.backToHome")}
+              className="flex shrink-0 items-center"
+            >
+              {logoUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
                 <img src={logoUrl} alt="" className="h-8 w-auto" />
-              </Link>
-            )}
+              ) : (
+                <span className="text-lg font-semibold tracking-wide">
+                  {siteTitle}
+                </span>
+              )}
+            </Link>
             <nav className="flex flex-wrap items-center gap-4 text-sm">
               <Link href="/admin" className="font-semibold">
                 {t("admin.dashboard")}

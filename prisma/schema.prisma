@@ -174,6 +174,16 @@ model SiteSettings {
   bookingEnabled       Boolean  @default(true)
   lotteryEnabled       Boolean  @default(true)
   creditProfilesEnabled Boolean @default(true)
+  // "Contact us" card shown behind a header/footer button on the public
+  // site. Off hides the button entirely. titleEn/Zh label the card (empty =
+  // built-in default copy); url is an optional outbound link (e.g. a chat
+  // app add-friend link); contactQrImage is an optional QR code image, same
+  // token/storage scheme as backgroundImage/logo.
+  contactEnabled       Boolean  @default(false)
+  contactTitleEn       String   @default("")
+  contactTitleZh       String   @default("")
+  contactUrl           String   @default("")
+  contactQrImage       String   @default("")
   // Flips to true once the first-run setup wizard (src/app/[locale]/admin/setup)
   // finishes. While false, every /admin/(protected) route redirects there.
   setupCompleted       Boolean  @default(false)

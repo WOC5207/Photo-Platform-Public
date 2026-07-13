@@ -43,32 +43,47 @@ export default async function SiteSettingsPage() {
           subjectTermZh: settings.subjectTermZh,
           bookingEnabled: settings.bookingEnabled,
           lotteryEnabled: settings.lotteryEnabled,
-          creditProfilesEnabled: settings.creditProfilesEnabled
+          creditProfilesEnabled: settings.creditProfilesEnabled,
+          contactEnabled: settings.contactEnabled,
+          contactTitleEn: settings.contactTitleEn,
+          contactTitleZh: settings.contactTitleZh,
+          contactUrl: settings.contactUrl
         }}
         creditTerm={creditTerm}
-      />
-
-      <SiteImageUploader kind="logo" currentUrl={siteImageUrl(settings.logo)} />
-      <SiteImageUploader
-        kind="background"
-        currentUrl={siteImageUrl(settings.backgroundImage)}
-      />
-
-      <PersonalLinksManager
-        links={personalLinks.map((l) => ({
-          id: l.id,
-          labelEn: l.labelEn,
-          labelZh: l.labelZh,
-          url: l.url
-        }))}
-      />
-
-      <ContactMethodsManager
-        methods={contactMethods.map((m) => ({
-          id: m.id,
-          labelEn: m.labelEn,
-          labelZh: m.labelZh
-        }))}
+        logoSlot={
+          <SiteImageUploader kind="logo" currentUrl={siteImageUrl(settings.logo)} />
+        }
+        backgroundImageSlot={
+          <SiteImageUploader
+            kind="background"
+            currentUrl={siteImageUrl(settings.backgroundImage)}
+          />
+        }
+        personalLinksSlot={
+          <PersonalLinksManager
+            links={personalLinks.map((l) => ({
+              id: l.id,
+              labelEn: l.labelEn,
+              labelZh: l.labelZh,
+              url: l.url
+            }))}
+          />
+        }
+        contactQrSlot={
+          <SiteImageUploader
+            kind="contactQr"
+            currentUrl={siteImageUrl(settings.contactQrImage)}
+          />
+        }
+        contactMethodsSlot={
+          <ContactMethodsManager
+            methods={contactMethods.map((m) => ({
+              id: m.id,
+              labelEn: m.labelEn,
+              labelZh: m.labelZh
+            }))}
+          />
+        }
       />
     </div>
   );
