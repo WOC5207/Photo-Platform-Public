@@ -6,7 +6,13 @@ import MobileNav from "@/components/MobileNav";
 import ThemeToggle from "@/components/ThemeToggle";
 import ScrollBlurBackground from "@/components/ScrollBlurBackground";
 import ContactUsButton from "@/components/ContactUsButton";
-import { getSiteSettings, resolveContactTitle, resolveSiteTitle } from "@/lib/settings";
+import {
+  getSiteSettings,
+  resolveContactQrToken,
+  resolveContactTitle,
+  resolveContactUrl,
+  resolveSiteTitle
+} from "@/lib/settings";
 import { siteImageUrl } from "@/lib/images";
 
 export default async function PublicLayout({
@@ -21,9 +27,9 @@ export default async function PublicLayout({
   const siteTitle = resolveSiteTitle(settings, locale, t("common.siteName"));
   const bgImage = siteImageUrl(settings.backgroundImage);
   const logoUrl = siteImageUrl(settings.logo);
-  const contactQrUrl = siteImageUrl(settings.contactQrImage);
-  const showContact =
-    settings.contactEnabled && (settings.contactUrl || contactQrUrl);
+  const contactUrl = resolveContactUrl(settings, locale);
+  const contactQrUrl = siteImageUrl(resolveContactQrToken(settings, locale));
+  const showContact = settings.contactEnabled && (contactUrl || contactQrUrl);
   const contactTitle = resolveContactTitle(settings, locale, t("nav.contact"));
   const contactLabels = {
     button: t("nav.contact"),
@@ -73,7 +79,7 @@ export default async function PublicLayout({
             {showContact && (
               <ContactUsButton
                 title={contactTitle}
-                url={settings.contactUrl}
+                url={contactUrl}
                 qrUrl={contactQrUrl}
                 labels={contactLabels}
                 className="rounded-lg border border-border-strong px-3 py-1.5 text-fg-muted transition hover:border-fg-faint hover:text-fg"
@@ -101,7 +107,7 @@ export default async function PublicLayout({
               showContact
                 ? {
                     title: contactTitle,
-                    url: settings.contactUrl,
+                    url: contactUrl,
                     qrUrl: contactQrUrl,
                     labels: contactLabels
                   }
@@ -120,7 +126,7 @@ export default async function PublicLayout({
         {showContact && (
           <ContactUsButton
             title={contactTitle}
-            url={settings.contactUrl}
+            url={contactUrl}
             qrUrl={contactQrUrl}
             labels={contactLabels}
             className="text-fg-muted underline decoration-fg/30 underline-offset-2 transition hover:text-fg"

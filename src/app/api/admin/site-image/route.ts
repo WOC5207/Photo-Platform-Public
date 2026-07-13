@@ -12,16 +12,24 @@ import {
 } from "@/lib/images";
 
 // Per-kind processing + which settings column the token is stored in.
-const KINDS: Record<"background" | "logo" | "contactQr", SiteImageOptions> = {
+const KINDS: Record<
+  "background" | "logo" | "contactQrEn" | "contactQrZh",
+  SiteImageOptions
+> = {
   background: { prefix: "bg", maxWidth: 2560, maxHeight: 2560, quality: 82 },
   logo: { prefix: "logo", maxWidth: 512, maxHeight: 512, quality: 90 },
-  contactQr: { prefix: "qr", maxWidth: 800, maxHeight: 800, quality: 90 }
+  contactQrEn: { prefix: "qren", maxWidth: 800, maxHeight: 800, quality: 90 },
+  contactQrZh: { prefix: "qrzh", maxWidth: 800, maxHeight: 800, quality: 90 }
 };
 
-const COLUMN: Record<keyof typeof KINDS, "backgroundImage" | "logo" | "contactQrImage"> = {
+const COLUMN: Record<
+  keyof typeof KINDS,
+  "backgroundImage" | "logo" | "contactQrImageEn" | "contactQrImageZh"
+> = {
   background: "backgroundImage",
   logo: "logo",
-  contactQr: "contactQrImage"
+  contactQrEn: "contactQrImageEn",
+  contactQrZh: "contactQrImageZh"
 };
 
 export async function POST(req: NextRequest) {
@@ -33,9 +41,10 @@ export async function POST(req: NextRequest) {
   const kind = form.get("kind");
   const file = form.get("file");
 
-  if (kind !== "background" && kind !== "logo" && kind !== "contactQr") {
+  if (typeof kind !== "string" || !(kind in KINDS)) {
     return NextResponse.json({ error: "badRequest" }, { status: 400 });
   }
+  const validKind = kind as keyof typeof KINDS;
   if (!(file instanceof File)) {
     return NextResponse.json({ error: "badRequest" }, { status: 400 });
   }
@@ -49,15 +58,20 @@ export async function POST(req: NextRequest) {
   const buffer = Buffer.from(await file.arrayBuffer());
   let token: string;
   try {
-    token = await processAndStoreSiteImage(buffer, KINDS[kind]);
+    token = await processAndStoreSiteImage(buffer, KINDS[validKind]);
   } catch {
     return NextResponse.json({ error: "invalidImage" }, { status: 400 });
   }
 
-  const column = COLUMN[kind];
+  const column = COLUMN[validKind];
   const previous = await prisma.siteSettings.findUnique({
     where: { id: SITE_SETTINGS_ID },
-    select: { backgroundImage: true, logo: true, contactQrImage: true }
+    select: {
+      backgroundImage: true,
+      logo: true,
+      contactQrImageEn: true,
+      contactQrImageZh: true
+    }
   });
   const previousToken = previous?.[column];
 

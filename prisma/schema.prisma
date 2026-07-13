@@ -175,15 +175,20 @@ model SiteSettings {
   lotteryEnabled       Boolean  @default(true)
   creditProfilesEnabled Boolean @default(true)
   // "Contact us" card shown behind a header/footer button on the public
-  // site. Off hides the button entirely. titleEn/Zh label the card (empty =
-  // built-in default copy); url is an optional outbound link (e.g. a chat
-  // app add-friend link); contactQrImage is an optional QR code image, same
-  // token/storage scheme as backgroundImage/logo.
+  // site. Off hides the button entirely, site-wide. titleEn/Zh label the
+  // card (empty = built-in default copy). The link and QR code are set
+  // independently per language — e.g. a WeChat QR for the Chinese site and
+  // a WhatsApp link for the English one — so each is empty = no contact
+  // method for that language (the button just doesn't render on that
+  // locale, even if the other language has one configured). QR image
+  // fields use the same token/storage scheme as backgroundImage/logo.
   contactEnabled       Boolean  @default(false)
   contactTitleEn       String   @default("")
   contactTitleZh       String   @default("")
-  contactUrl           String   @default("")
-  contactQrImage       String   @default("")
+  contactUrlEn         String   @default("")
+  contactUrlZh         String   @default("")
+  contactQrImageEn     String   @default("")
+  contactQrImageZh     String   @default("")
   // Flips to true once the first-run setup wizard (src/app/[locale]/admin/setup)
   // finishes. While false, every /admin/(protected) route redirects there.
   setupCompleted       Boolean  @default(false)

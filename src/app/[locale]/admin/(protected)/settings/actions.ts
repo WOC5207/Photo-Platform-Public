@@ -38,7 +38,8 @@ const settingsSchema = z.object({
   contactEnabled: z.boolean(),
   contactTitleEn: z.string().trim().max(120),
   contactTitleZh: z.string().trim().max(120),
-  contactUrl: z.string().trim().max(500)
+  contactUrlEn: z.string().trim().max(500),
+  contactUrlZh: z.string().trim().max(500)
 });
 
 export async function updateSiteSettings(
@@ -65,7 +66,8 @@ export async function updateSiteSettings(
     contactEnabled: formData.get("contactEnabled") === "on",
     contactTitleEn: formData.get("contactTitleEn") ?? "",
     contactTitleZh: formData.get("contactTitleZh") ?? "",
-    contactUrl: formData.get("contactUrl") ?? ""
+    contactUrlEn: formData.get("contactUrlEn") ?? "",
+    contactUrlZh: formData.get("contactUrlZh") ?? ""
   });
   if (!parsed.success) return { error: "validation" };
   const d = parsed.data;
@@ -91,7 +93,8 @@ export async function updateSiteSettings(
       contactEnabled: d.contactEnabled,
       contactTitleEn: d.contactTitleEn,
       contactTitleZh: d.contactTitleZh,
-      contactUrl: d.contactUrl
+      contactUrlEn: d.contactUrlEn,
+      contactUrlZh: d.contactUrlZh
     },
     update: {
       siteTitleEn: d.siteTitleEn,
@@ -111,7 +114,8 @@ export async function updateSiteSettings(
       contactEnabled: d.contactEnabled,
       contactTitleEn: d.contactTitleEn,
       contactTitleZh: d.contactTitleZh,
-      contactUrl: d.contactUrl
+      contactUrlEn: d.contactUrlEn,
+      contactUrlZh: d.contactUrlZh
     }
   });
 
@@ -309,18 +313,24 @@ export async function moveContactMethod(formData: FormData): Promise<void> {
 const SITE_IMAGE_COLUMN = {
   background: "backgroundImage",
   logo: "logo",
-  contactQr: "contactQrImage"
+  contactQrEn: "contactQrImageEn",
+  contactQrZh: "contactQrImageZh"
 } as const;
 
 export async function removeSiteImage(
-  kind: "background" | "logo" | "contactQr"
+  kind: "background" | "logo" | "contactQrEn" | "contactQrZh"
 ): Promise<void> {
   if (!(await isAdmin())) return;
 
   const column = SITE_IMAGE_COLUMN[kind];
   const existing = await prisma.siteSettings.findUnique({
     where: { id: SITE_SETTINGS_ID },
-    select: { backgroundImage: true, logo: true, contactQrImage: true }
+    select: {
+      backgroundImage: true,
+      logo: true,
+      contactQrImageEn: true,
+      contactQrImageZh: true
+    }
   });
   const token = existing?.[column];
   if (token) await deleteSiteImageFile(token);

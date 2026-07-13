@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { removeSiteImage } from "@/app/[locale]/admin/(protected)/settings/actions";
 
-type Kind = "background" | "logo" | "contactQr";
+type Kind = "background" | "logo" | "contactQrEn" | "contactQrZh";
 
 const LABELS: Record<
   Kind,
@@ -27,13 +27,21 @@ const LABELS: Record<
     none: "noLogo",
     error: "uploadLogoError"
   },
-  contactQr: {
-    section: "contactQrSection",
-    hint: "contactQrHint",
-    upload: "uploadContactQr",
-    remove: "removeContactQr",
-    none: "noContactQr",
-    error: "uploadContactQrError"
+  contactQrEn: {
+    section: "contactQrEnSection",
+    hint: "contactQrEnHint",
+    upload: "uploadContactQrEn",
+    remove: "removeContactQrEn",
+    none: "noContactQrEn",
+    error: "uploadContactQrEnError"
+  },
+  contactQrZh: {
+    section: "contactQrZhSection",
+    hint: "contactQrZhHint",
+    upload: "uploadContactQrZh",
+    remove: "removeContactQrZh",
+    none: "noContactQrZh",
+    error: "uploadContactQrZhError"
   }
 };
 
@@ -75,7 +83,7 @@ export default function SiteImageUploader({
   const previewCls =
     kind === "logo"
       ? "h-16 w-auto max-w-[12rem] rounded-lg border border-border bg-page object-contain p-2"
-      : kind === "contactQr"
+      : kind === "contactQrEn" || kind === "contactQrZh"
         ? "h-32 w-32 rounded-lg border border-border bg-page object-contain p-2"
         : "h-32 w-56 rounded-lg border border-border object-cover";
 

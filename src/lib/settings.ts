@@ -26,8 +26,10 @@ export interface SiteSettings {
   contactEnabled: boolean;
   contactTitleEn: string;
   contactTitleZh: string;
-  contactUrl: string;
-  contactQrImage: string;
+  contactUrlEn: string;
+  contactUrlZh: string;
+  contactQrImageEn: string;
+  contactQrImageZh: string;
   setupCompleted: boolean;
 }
 
@@ -52,8 +54,10 @@ const DEFAULTS: SiteSettings = {
   contactEnabled: false,
   contactTitleEn: "",
   contactTitleZh: "",
-  contactUrl: "",
-  contactQrImage: "",
+  contactUrlEn: "",
+  contactUrlZh: "",
+  contactQrImageEn: "",
+  contactQrImageZh: "",
   setupCompleted: false
 };
 
@@ -133,6 +137,22 @@ export function resolveContactTitle(
   fallback: string
 ): string {
   return pickText(locale, settings.contactTitleEn, settings.contactTitleZh) || fallback;
+}
+
+/**
+ * Resolve the "Contact us" link for a locale. Unlike resolveContactTitle,
+ * this does NOT fall back to the other language — a WeChat link configured
+ * only for the Chinese site shouldn't surface on the English one just
+ * because nothing else is set there. Empty means no contact method for
+ * that locale.
+ */
+export function resolveContactUrl(settings: SiteSettings, locale: string): string {
+  return locale === "zh" ? settings.contactUrlZh : settings.contactUrlEn;
+}
+
+/** Same as resolveContactUrl, for the QR code image token. */
+export function resolveContactQrToken(settings: SiteSettings, locale: string): string {
+  return locale === "zh" ? settings.contactQrImageZh : settings.contactQrImageEn;
 }
 
 /** Admin-configured options for the booking form's contact-method dropdown. */

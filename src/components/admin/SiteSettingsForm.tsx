@@ -46,7 +46,8 @@ export default function SiteSettingsForm({
   logoSlot,
   backgroundImageSlot,
   personalLinksSlot,
-  contactQrSlot,
+  contactQrEnSlot,
+  contactQrZhSlot,
   contactMethodsSlot
 }: {
   initial: {
@@ -67,7 +68,8 @@ export default function SiteSettingsForm({
     contactEnabled: boolean;
     contactTitleEn: string;
     contactTitleZh: string;
-    contactUrl: string;
+    contactUrlEn: string;
+    contactUrlZh: string;
   };
   // Resolved display term (e.g. "Cosplayer"), used to phrase the credit
   // profiles feature toggle in the site's own configured vocabulary.
@@ -77,7 +79,8 @@ export default function SiteSettingsForm({
   logoSlot: ReactNode;
   backgroundImageSlot: ReactNode;
   personalLinksSlot: ReactNode;
-  contactQrSlot: ReactNode;
+  contactQrEnSlot: ReactNode;
+  contactQrZhSlot: ReactNode;
   contactMethodsSlot: ReactNode;
 }) {
   const t = useTranslations("adminSite");
@@ -217,41 +220,60 @@ export default function SiteSettingsForm({
           />
           <span>{t("contactEnabledLabel")}</span>
         </label>
-        <div className="grid gap-4 sm:grid-cols-2">
-          <label className="flex flex-col gap-1 text-sm">
-            <span className="text-fg-muted">{t("contactTitleEn")}</span>
-            <input
-              form={FORM_ID}
-              name="contactTitleEn"
-              defaultValue={initial.contactTitleEn}
-              maxLength={120}
-              className={inputCls}
-            />
-          </label>
-          <label className="flex flex-col gap-1 text-sm">
-            <span className="text-fg-muted">{t("contactTitleZh")}</span>
-            <input
-              form={FORM_ID}
-              name="contactTitleZh"
-              defaultValue={initial.contactTitleZh}
-              maxLength={120}
-              className={inputCls}
-            />
-          </label>
+        <div className="grid gap-6 sm:grid-cols-2">
+          <div className="flex flex-col gap-3">
+            <h3 className="text-sm font-semibold text-fg-muted">English</h3>
+            <label className="flex flex-col gap-1 text-sm">
+              <span className="text-fg-muted">{t("contactTitleEn")}</span>
+              <input
+                form={FORM_ID}
+                name="contactTitleEn"
+                defaultValue={initial.contactTitleEn}
+                maxLength={120}
+                className={inputCls}
+              />
+            </label>
+            <label className="flex flex-col gap-1 text-sm">
+              <span className="text-fg-muted">{t("contactUrlEn")}</span>
+              <input
+                form={FORM_ID}
+                name="contactUrlEn"
+                type="url"
+                defaultValue={initial.contactUrlEn}
+                maxLength={500}
+                placeholder="https://…"
+                className={inputCls}
+              />
+            </label>
+            {contactQrEnSlot}
+          </div>
+          <div className="flex flex-col gap-3">
+            <h3 className="text-sm font-semibold text-fg-muted">中文</h3>
+            <label className="flex flex-col gap-1 text-sm">
+              <span className="text-fg-muted">{t("contactTitleZh")}</span>
+              <input
+                form={FORM_ID}
+                name="contactTitleZh"
+                defaultValue={initial.contactTitleZh}
+                maxLength={120}
+                className={inputCls}
+              />
+            </label>
+            <label className="flex flex-col gap-1 text-sm">
+              <span className="text-fg-muted">{t("contactUrlZh")}</span>
+              <input
+                form={FORM_ID}
+                name="contactUrlZh"
+                type="url"
+                defaultValue={initial.contactUrlZh}
+                maxLength={500}
+                placeholder="https://…"
+                className={inputCls}
+              />
+            </label>
+            {contactQrZhSlot}
+          </div>
         </div>
-        <label className="flex flex-col gap-1 text-sm">
-          <span className="text-fg-muted">{t("contactUrlLabel")}</span>
-          <input
-            form={FORM_ID}
-            name="contactUrl"
-            type="url"
-            defaultValue={initial.contactUrl}
-            maxLength={500}
-            placeholder="https://…"
-            className={inputCls}
-          />
-        </label>
-        {contactQrSlot}
       </Group>
 
       {/* Booking: photoshoot booking page */}
