@@ -98,7 +98,7 @@ To generate a good `SESSION_SECRET`:
 > **Don't leave `APP_BASE_URL` as `http://localhost:...` or the NAS's bare
 > IP.** Booking confirmation links and visitor cancel-links are built from
 > this value — if it's wrong, links you share with clients will be broken.
-> It's fine to start with `http://<nas-ip>:3312` while testing locally on
+> It's fine to start with `http://<nas-ip>:3000` while testing locally on
 > your own network, but switch it to the real HTTPS domain before sharing
 > any links externally (see [step 6](#6-connect-a-domain)).
 
@@ -114,8 +114,8 @@ To generate a good `SESSION_SECRET`:
    Node.js base images and compiles the app — expect **5–15 minutes** on a
    DS920+. Subsequent rebuilds (after updates) are faster since most layers
    are cached.
-4. Once running, the app listens on **port 3312** inside the container, which
-   `docker-compose.yml` maps to port **3312** on the NAS too. The
+4. Once running, the app listens on **port 3000** inside the container, which
+   `docker-compose.yml` maps to port **3000** on the NAS too. The
    `data/photos` and `data/db` folders (created automatically next to the
    compose file) are your persistent volumes — the container itself can be
    destroyed and recreated freely without losing data.
@@ -138,7 +138,7 @@ step 1 above (it will use the imported image instead of building).
 
 ## 5. First run
 
-1. Visit `http://<nas-ip>:3312/en/admin/login` (or `/zh/admin/login` for
+1. Visit `http://<nas-ip>:3000/en/admin/login` (or `/zh/admin/login` for
    Chinese) from a browser on your local network.
 2. Log in with the `ADMIN_USERNAME` / `ADMIN_PASSWORD` you set in `.env` —
    this first successful login is what creates the admin account in the
@@ -168,7 +168,7 @@ itself (and every other NAS service) stays exactly as private as before.
 **How it fits together**: your domain's DNS record points at your NAS's
 public IP address (directly, or indirectly via a DDNS hostname) → your
 router forwards ports 80/443 to the NAS → DSM's reverse proxy takes HTTPS
-traffic for that domain and forwards it internally to the app's port 3312 →
+traffic for that domain and forwards it internally to the app's port 3000 →
 DSM also handles getting and renewing the HTTPS certificate. The app
 container itself never talks to the internet directly or knows anything
 about domains beyond the `APP_BASE_URL` value you give it.
@@ -238,7 +238,7 @@ domain check) and 443 (HTTPS) from the internet.
    `192.168.0.1` — check the sticker on the router if unsure) and find **Port
    Forwarding** (sometimes called **Virtual Server** or **NAT**).
 3. Add two rules forwarding external ports **80** and **443** to the NAS's
-   local IP, same ports (80→80, 443→443). Leave port 3312 out of this — it
+   local IP, same ports (80→80, 443→443). Leave port 3000 out of this — it
    should **not** be exposed directly to the internet; only DSM's reverse
    proxy (443) will be public-facing.
 4. Some routers have "hardware NAT" or "SIP ALG" options that occasionally
@@ -271,7 +271,7 @@ fine with DSM's reverse proxy as the final hop).
 ### 6.6 Set up the reverse proxy
 
 This is the piece that maps `https://photos.yourstudio.com` (public, port
-443) to the app container (internal, port 3312).
+443) to the app container (internal, port 3000).
 
 1. **Control Panel → Login Portal → Advanced → Reverse Proxy → Create**.
 2. **Source**:
@@ -282,7 +282,7 @@ This is the piece that maps `https://photos.yourstudio.com` (public, port
 3. **Destination**:
    - Protocol: `HTTP`
    - Hostname: `localhost`
-   - Port: `3312`
+   - Port: `3000`
 4. Leave the custom header / WebSocket options at their defaults — this app
    doesn't need WebSocket passthrough.
 5. Save. Make sure the certificate from 6.5 is assigned to this hostname:
@@ -313,7 +313,7 @@ valid padlock. Check a few things:
   share (visible on the confirmation page) uses `https://photos.yourstudio.com/...`,
   not `localhost` or the bare NAS IP — if it doesn't, double-check
   `APP_BASE_URL` and that you rebuilt the container after changing it.
-- `http://<nas-ip>:3312` should still work from your local network too
+- `http://<nas-ip>:3000` should still work from your local network too
   (useful for troubleshooting), but don't share that link externally — it's
   unencrypted and bypasses the reverse proxy.
 
@@ -356,7 +356,7 @@ starting the project again.
 **Build fails or hangs on the NAS.** Usually low RAM. Build on a PC instead
 and import the image — see the note at the end of [step 4](#4-build-and-run-in-container-manager).
 
-**Container Manager shows the project running, but `http://<nas-ip>:3312`
+**Container Manager shows the project running, but `http://<nas-ip>:3000`
 doesn't load.** Check the container's logs (Container Manager → Container →
 select it → **Details → Log**) for a crash on startup — most often a missing
 or malformed `.env` value. Confirm `.env` exists in the project folder (not
@@ -366,7 +366,7 @@ is filled in.
 **`https://your-domain` shows a DSM error page or "502 Bad Gateway".** The
 reverse proxy is reachable but can't reach the app. Confirm the container is
 actually running, and that the reverse proxy's destination port (6.6) is
-`3312` — the same port `docker-compose.yml` publishes.
+`3000` — the same port `docker-compose.yml` publishes.
 
 **`https://your-domain` doesn't load at all (times out).** Almost always
 port forwarding ([6.4](#64-forward-ports-80443-on-your-router)) or CGNAT.
@@ -395,7 +395,7 @@ have real data.
 
 ## 10. Security checklist
 
-- Never expose port **3312** directly to the internet (no port-forwarding
+- Never expose port **3000** directly to the internet (no port-forwarding
   rule for it) — only DSM's reverse proxy on 443 should be public. The
   app has no HTTPS of its own; DSM is what makes this safe.
 - Use a long, unique `ADMIN_PASSWORD` and a random 32+ character
