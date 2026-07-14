@@ -172,20 +172,33 @@ export default function HomeHighlightsPanel({
                 {announcements.map((a) => (
                   <li
                     key={a.id}
-                    className="flex flex-col gap-3 rounded-xl border border-fg/10 bg-surface p-3 sm:flex-row"
+                    className={`relative overflow-hidden rounded-xl border border-fg/10 bg-surface p-4 ${
+                      a.imageUrl ? "min-h-[7rem]" : ""
+                    }`}
                   >
                     {a.imageUrl && (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={a.imageUrl}
-                        alt=""
-                        className="h-40 w-full shrink-0 rounded-lg object-cover sm:h-24 sm:w-24"
-                      />
+                      <>
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={a.imageUrl}
+                          alt=""
+                          className="absolute inset-0 h-full w-full scale-110 object-cover blur-md"
+                        />
+                        <div className="absolute inset-0 bg-black/55" />
+                      </>
                     )}
-                    <div className="min-w-0">
-                      <p className="font-semibold">{a.title}</p>
+                    <div className="relative min-w-0">
+                      <p
+                        className={`font-semibold ${a.imageUrl ? "text-white" : ""}`}
+                      >
+                        {a.title}
+                      </p>
                       {a.body && (
-                        <p className="mt-1 whitespace-pre-line text-sm text-fg-subtle">
+                        <p
+                          className={`mt-1 whitespace-pre-line text-sm ${
+                            a.imageUrl ? "text-white/85" : "text-fg-subtle"
+                          }`}
+                        >
                           {a.body}
                         </p>
                       )}
