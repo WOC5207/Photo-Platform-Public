@@ -179,6 +179,7 @@ model SiteSettings {
   bookingEnabled       Boolean  @default(true)
   lotteryEnabled       Boolean  @default(true)
   creditProfilesEnabled Boolean @default(true)
+  announcementsEnabled Boolean  @default(true)
   // "Contact us" card shown behind a header/footer button on the public
   // site. Off hides the button entirely, site-wide. titleEn/Zh label the
   // card (empty = built-in default copy). The link and QR code are set

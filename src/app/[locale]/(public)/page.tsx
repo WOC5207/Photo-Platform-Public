@@ -191,6 +191,7 @@ export default async function HomePage() {
       <HomeHighlightsPanel
         events={highlightEvents}
         announcements={announcementItems}
+        announcementsEnabled={settings.announcementsEnabled}
         labels={{
           announcementsTab: t("announcementsTab"),
           noAnnouncements: t("noAnnouncements"),

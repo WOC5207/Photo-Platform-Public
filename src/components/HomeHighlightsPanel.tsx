@@ -126,26 +126,33 @@ function EventCarousel({
 export default function HomeHighlightsPanel({
   events,
   announcements,
+  announcementsEnabled,
   labels
 }: {
   events: HighlightEventGroup[];
   announcements: HighlightAnnouncement[];
+  announcementsEnabled: boolean;
   labels: HomeHighlightsLabels;
 }) {
-  const [activeTab, setActiveTab] = useState<string>("announcements");
+  const [activeTab, setActiveTab] = useState<string>(
+    announcementsEnabled ? "announcements" : (events[0]?.slug ?? "")
+  );
   const activeEvent = events.find((e) => e.slug === activeTab);
+  const showAnnouncements = announcementsEnabled && activeTab === "announcements";
 
   return (
     <section className="overflow-hidden rounded-2xl border border-fg/10 bg-page/85">
       <div className="flex flex-col gap-6 p-6 sm:p-8 lg:flex-row lg:gap-8">
         <div className="flex shrink-0 gap-2 overflow-x-auto lg:w-48 lg:flex-col lg:overflow-visible">
-          <button
-            type="button"
-            onClick={() => setActiveTab("announcements")}
-            className={tabCls(activeTab === "announcements")}
-          >
-            {labels.announcementsTab}
-          </button>
+          {announcementsEnabled && (
+            <button
+              type="button"
+              onClick={() => setActiveTab("announcements")}
+              className={tabCls(activeTab === "announcements")}
+            >
+              {labels.announcementsTab}
+            </button>
+          )}
           {events.map((event) => (
             <button
               key={event.slug}
@@ -159,7 +166,7 @@ export default function HomeHighlightsPanel({
         </div>
 
         <div className="min-w-0 flex-1">
-          {activeTab === "announcements" ? (
+          {showAnnouncements ? (
             announcements.length > 0 ? (
               <ul className="flex flex-col gap-3">
                 {announcements.map((a) => (

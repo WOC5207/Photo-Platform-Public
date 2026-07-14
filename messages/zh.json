@@ -231,6 +231,7 @@
     "confirmDeletePersonalLink": "删除这个个人链接？",
     "announcementsSection": "公告",
     "announcementsHint": "显示在首页面板「公告」标签中的简短通知，按下方顺序排列。",
+    "announcementsEnabledLabel": "显示「公告」标签",
     "announcementTitleEn": "标题（English）",
     "announcementTitleZh": "标题（中文）",
     "announcementBodyEn": "内容（English，可选）",

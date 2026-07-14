@@ -231,6 +231,7 @@
     "confirmDeletePersonalLink": "Delete this personal link?",
     "announcementsSection": "Announcements",
     "announcementsHint": "Short notices shown in the homepage panel's Announcements tab, in the order listed below.",
+    "announcementsEnabledLabel": "Show the Announcements tab",
     "announcementTitleEn": "Title (English)",
     "announcementTitleZh": "Title (中文)",
     "announcementBodyEn": "Body (English, optional)",

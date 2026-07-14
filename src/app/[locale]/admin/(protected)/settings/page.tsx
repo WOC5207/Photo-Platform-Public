@@ -83,6 +83,7 @@ export default async function SiteSettingsPage() {
               bodyZh: a.bodyZh,
               imageUrl: siteImageUrl(a.image)
             }))}
+            announcementsEnabled={settings.announcementsEnabled}
           />
         }
         contactQrEnSlot={

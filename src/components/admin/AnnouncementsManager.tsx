@@ -10,6 +10,7 @@ import {
   type AnnouncementState
 } from "@/app/[locale]/admin/(protected)/settings/actions";
 import AnnouncementImageUploader from "./AnnouncementImageUploader";
+import { FORM_ID } from "./SiteSettingsForm";
 
 export interface AdminAnnouncement {
   id: string;
@@ -26,9 +27,11 @@ const btnCls =
   "rounded-md border border-border-strong px-2 py-1 text-xs text-fg-muted transition hover:border-fg-faint hover:text-fg disabled:opacity-40";
 
 export default function AnnouncementsManager({
-  announcements
+  announcements,
+  announcementsEnabled
 }: {
   announcements: AdminAnnouncement[];
+  announcementsEnabled: boolean;
 }) {
   const t = useTranslations("adminSite");
   const tc = useTranslations("common");
@@ -41,6 +44,17 @@ export default function AnnouncementsManager({
     <section className="flex flex-col gap-3 border-t border-border pt-6">
       <h2 className="text-lg font-semibold">{t("announcementsSection")}</h2>
       <p className="-mt-1 text-xs text-fg-subtle">{t("announcementsHint")}</p>
+
+      <label className="flex items-center gap-2 text-sm">
+        <input
+          form={FORM_ID}
+          type="checkbox"
+          name="announcementsEnabled"
+          defaultChecked={announcementsEnabled}
+          className="h-4 w-4 accent-fg"
+        />
+        <span>{t("announcementsEnabledLabel")}</span>
+      </label>
 
       {announcements.length > 0 && (
         <ul className="flex flex-col gap-2">

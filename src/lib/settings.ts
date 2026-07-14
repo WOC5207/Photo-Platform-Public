@@ -23,6 +23,7 @@ export interface SiteSettings {
   bookingEnabled: boolean;
   lotteryEnabled: boolean;
   creditProfilesEnabled: boolean;
+  announcementsEnabled: boolean;
   contactEnabled: boolean;
   contactTitleEn: string;
   contactTitleZh: string;
@@ -51,6 +52,7 @@ const DEFAULTS: SiteSettings = {
   bookingEnabled: true,
   lotteryEnabled: true,
   creditProfilesEnabled: true,
+  announcementsEnabled: true,
   contactEnabled: false,
   contactTitleEn: "",
   contactTitleZh: "",
