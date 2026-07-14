@@ -1,7 +1,7 @@
 import { getTranslations, getLocale } from "next-intl/server";
 import { prisma } from "@/lib/db";
 import { pickText, formatCredits } from "@/lib/content";
-import { photoUrls } from "@/lib/images";
+import { photoUrls, siteImageUrl } from "@/lib/images";
 import { formatDate, formatDateRange } from "@/lib/datetime";
 import { Link } from "@/i18n/navigation";
 import {
@@ -137,7 +137,8 @@ export default async function HomePage() {
           dateLabel: formatDateRange(e.dateStart, e.dateEnd) || null,
           photos: selected.slice(0, 8).map((p) => ({
             id: p.id,
-            url: photoUrls(e.id, p.id).med
+            url: photoUrls(e.id, p.id).med,
+            caption: formatCredits(p.credits)
           }))
         }
       ];
@@ -147,7 +148,8 @@ export default async function HomePage() {
   const announcementItems: HighlightAnnouncement[] = announcements.map((a) => ({
     id: a.id,
     title: pickText(locale, a.titleEn, a.titleZh),
-    body: pickText(locale, a.bodyEn, a.bodyZh)
+    body: pickText(locale, a.bodyEn, a.bodyZh),
+    imageUrl: siteImageUrl(a.image)
   }));
 
   return (

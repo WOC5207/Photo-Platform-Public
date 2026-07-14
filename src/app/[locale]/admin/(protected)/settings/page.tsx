@@ -80,7 +80,8 @@ export default async function SiteSettingsPage() {
               titleEn: a.titleEn,
               titleZh: a.titleZh,
               bodyEn: a.bodyEn,
-              bodyZh: a.bodyZh
+              bodyZh: a.bodyZh,
+              imageUrl: siteImageUrl(a.image)
             }))}
           />
         }

@@ -6,6 +6,7 @@ import { Link } from "@/i18n/navigation";
 export interface HighlightPhoto {
   id: string;
   url: string;
+  caption: string;
 }
 
 export interface HighlightEventGroup {
@@ -19,6 +20,7 @@ export interface HighlightAnnouncement {
   id: string;
   title: string;
   body: string;
+  imageUrl: string;
 }
 
 export interface HomeHighlightsLabels {
@@ -48,7 +50,7 @@ function EventCarousel({
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl bg-surface sm:aspect-video">
+      <div className="group relative aspect-[4/3] w-full overflow-hidden rounded-xl bg-surface sm:aspect-video">
         <Link href={`/gallery/${event.slug}`} className="block h-full w-full">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
@@ -56,6 +58,13 @@ function EventCarousel({
             alt={event.title}
             className="h-full w-full object-cover"
           />
+          {photo.caption && (
+            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent p-4 pt-10 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+              <p className="truncate text-sm font-medium text-white">
+                {photo.caption}
+              </p>
+            </div>
+          )}
         </Link>
         {hasMultiple && (
           <>
@@ -156,14 +165,24 @@ export default function HomeHighlightsPanel({
                 {announcements.map((a) => (
                   <li
                     key={a.id}
-                    className="rounded-xl border border-fg/10 bg-surface p-3"
+                    className="flex flex-col gap-3 rounded-xl border border-fg/10 bg-surface p-3 sm:flex-row"
                   >
-                    <p className="font-semibold">{a.title}</p>
-                    {a.body && (
-                      <p className="mt-1 whitespace-pre-line text-sm text-fg-subtle">
-                        {a.body}
-                      </p>
+                    {a.imageUrl && (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={a.imageUrl}
+                        alt=""
+                        className="h-40 w-full shrink-0 rounded-lg object-cover sm:h-24 sm:w-24"
+                      />
                     )}
+                    <div className="min-w-0">
+                      <p className="font-semibold">{a.title}</p>
+                      {a.body && (
+                        <p className="mt-1 whitespace-pre-line text-sm text-fg-subtle">
+                          {a.body}
+                        </p>
+                      )}
+                    </div>
                   </li>
                 ))}
               </ul>

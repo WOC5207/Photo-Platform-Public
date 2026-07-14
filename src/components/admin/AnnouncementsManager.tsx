@@ -9,6 +9,7 @@ import {
   updateAnnouncement,
   type AnnouncementState
 } from "@/app/[locale]/admin/(protected)/settings/actions";
+import AnnouncementImageUploader from "./AnnouncementImageUploader";
 
 export interface AdminAnnouncement {
   id: string;
@@ -16,6 +17,7 @@ export interface AdminAnnouncement {
   titleZh: string;
   bodyEn: string;
   bodyZh: string;
+  imageUrl: string;
 }
 
 const inputCls =
@@ -87,6 +89,12 @@ export default function AnnouncementsManager({
                   {tc("save")}
                 </button>
               </form>
+              <div className="mt-2">
+                <AnnouncementImageUploader
+                  announcementId={item.id}
+                  currentUrl={item.imageUrl}
+                />
+              </div>
               <div className="mt-2 flex flex-wrap gap-2">
                 <form action={moveAnnouncement}>
                   <input type="hidden" name="id" value={item.id} />

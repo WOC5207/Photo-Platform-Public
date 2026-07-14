@@ -232,6 +232,10 @@ model Announcement {
   titleZh   String
   bodyEn    String   @default("")
   bodyZh    String   @default("")
+  // Optional accompanying image, one per announcement (not split by
+  // language — same token/storage scheme as backgroundImage/logo, but
+  // keyed per-row here instead of the SiteSettings singleton).
+  image     String   @default("")
   sortOrder Int      @default(0)
   createdAt DateTime @default(now())
 }

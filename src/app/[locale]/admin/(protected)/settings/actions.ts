@@ -409,6 +409,21 @@ export async function moveAnnouncement(formData: FormData): Promise<void> {
   revalidatePath("/", "layout");
 }
 
+export async function removeAnnouncementImage(formData: FormData): Promise<void> {
+  await guard();
+  const id = formData.get("id");
+  if (typeof id !== "string") return;
+
+  const existing = await prisma.announcement.findUnique({
+    where: { id },
+    select: { image: true }
+  });
+  if (existing?.image) await deleteSiteImageFile(existing.image);
+
+  await prisma.announcement.update({ where: { id }, data: { image: "" } }).catch(() => {});
+  revalidatePath("/", "layout");
+}
+
 const SITE_IMAGE_COLUMN = {
   background: "backgroundImage",
   logo: "logo",
