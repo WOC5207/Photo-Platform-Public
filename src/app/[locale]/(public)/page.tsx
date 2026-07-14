@@ -1,21 +1,24 @@
 import { getTranslations, getLocale } from "next-intl/server";
 import { prisma } from "@/lib/db";
 import { pickText, formatCredits } from "@/lib/content";
-import { photoUrls } from "@/lib/images";
+import { photoUrls, siteImageUrl } from "@/lib/images";
 import { formatDate, formatDateRange } from "@/lib/datetime";
+import { Link } from "@/i18n/navigation";
 import {
   getSiteSettings,
+  getAnnouncements,
   getPersonalLinks,
   resolveHomeTitle,
-  resolveHomeSubtitle,
   resolveCreditTerm
 } from "@/lib/settings";
 import EventPhotoStream, {
   type StreamEvent
 } from "@/components/EventPhotoStream";
-import HeroEventsPanel, {
-  type HeroHighlightEvent
-} from "@/components/HeroEventsPanel";
+import HomeHighlightsPanel, {
+  type HighlightEventGroup,
+  type HighlightAnnouncement
+} from "@/components/HomeHighlightsPanel";
+import HomeSearchBox from "@/components/HomeSearchBox";
 import BookingCalendar, {
   type CalendarSession
 } from "@/components/BookingCalendar";
@@ -35,19 +38,17 @@ export default async function HomePage() {
   const settings = await getSiteSettings();
 
   const heroTitle = resolveHomeTitle(settings, locale, t("title"));
-  const heroSubtitle = resolveHomeSubtitle(settings, locale, t("subtitle"));
   const creditTerm = resolveCreditTerm(settings, locale, tc("creditTerm"));
   const creditsLabel = locale === "zh" ? creditTerm : `${creditTerm}s`;
 
   const today = new Date();
   today.setUTCHours(0, 0, 0, 0);
 
-  const [events, bookingEvents, personalLinks] = await Promise.all([
+  const [events, bookingEvents, personalLinks, announcements] = await Promise.all([
     prisma.event.findMany({
       where: { published: true },
       orderBy: [{ dateStart: "desc" }, { createdAt: "desc" }],
       include: {
-        coverPhoto: true,
         photos: {
           orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
           include: { credits: { orderBy: { sortOrder: "asc" } } }
@@ -69,7 +70,8 @@ export default async function HomePage() {
           }
         })
       : Promise.resolve([]),
-    getPersonalLinks()
+    getPersonalLinks(),
+    getAnnouncements()
   ]);
 
   // Derived from the already-loaded published events rather than extra count
@@ -119,35 +121,84 @@ export default async function HomePage() {
       }))
     }));
 
-  // The hero panel highlights a handful of events by their admin-selected
-  // cover photo (same one used on the gallery listing) rather than
-  // duplicating the full per-event photo stream shown below in "Recent
-  // work" — events without a resolvable photo are skipped, not shown as an
-  // empty tile.
-  const highlightEvents: HeroHighlightEvent[] = events
+  // The highlights panel only shows events that have at least one photo the
+  // admin explicitly marked for it (Photo.homeHighlight, toggled per photo
+  // in the event editor) — distinct from both the cover photo (gallery
+  // listing thumbnail) and the full per-event stream shown below in
+  // "Recent work". An event with none marked simply doesn't get a tab yet.
+  const highlightEvents: HighlightEventGroup[] = events
     .flatMap((e) => {
-      const cover = e.coverPhoto ?? e.photos[0] ?? null;
-      if (!cover) return [];
+      const selected = e.photos.filter((p) => p.homeHighlight);
+      if (selected.length === 0) return [];
       return [
         {
           slug: e.slug,
           title: pickText(locale, e.titleEn, e.titleZh),
           dateLabel: formatDateRange(e.dateStart, e.dateEnd) || null,
-          photoUrl: photoUrls(e.id, cover.id).med
+          photos: selected.slice(0, 8).map((p) => ({
+            id: p.id,
+            url: photoUrls(e.id, p.id).med,
+            caption: formatCredits(p.credits)
+          }))
         }
       ];
     })
-    .slice(0, 8);
+    .slice(0, 6);
+
+  const announcementItems: HighlightAnnouncement[] = announcements.map((a) => ({
+    id: a.id,
+    title: pickText(locale, a.titleEn, a.titleZh),
+    body: pickText(locale, a.bodyEn, a.bodyZh),
+    imageUrl: siteImageUrl(a.image)
+  }));
 
   return (
     <div className="flex flex-col gap-8">
-      <HeroEventsPanel
-        title={heroTitle}
-        subtitle={heroSubtitle}
-        browseLabel={t("browseGallery")}
-        bookingLabel={t("bookingButton")}
-        bookingEnabled={settings.bookingEnabled}
+      <div className="flex flex-col gap-6 px-2 lg:flex-row lg:items-center lg:justify-between lg:gap-10">
+        <div className="flex flex-col items-start gap-4">
+          <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
+            {heroTitle}
+          </h1>
+          <div className="flex flex-wrap items-center gap-3">
+            <Link
+              href="/gallery"
+              className="rounded-full bg-fg px-5 py-2.5 text-sm font-semibold text-page transition hover:opacity-90"
+            >
+              {t("browseGallery")}
+            </Link>
+            {settings.bookingEnabled && (
+              <Link
+                href="/booking"
+                className="rounded-full border border-border-strong px-5 py-2.5 text-sm font-semibold text-fg-muted transition hover:border-fg-faint hover:text-fg"
+              >
+                {t("bookingButton")}
+              </Link>
+            )}
+          </div>
+        </div>
+
+        <HomeSearchBox
+          locale={locale}
+          className="w-full lg:w-[26rem] lg:shrink-0"
+          labels={{
+            placeholder: t("searchPlaceholder"),
+            searching: t("searching"),
+            noResults: t("noSearchResults")
+          }}
+        />
+      </div>
+
+      <HomeHighlightsPanel
         events={highlightEvents}
+        announcements={announcementItems}
+        announcementsEnabled={settings.announcementsEnabled}
+        labels={{
+          announcementsTab: t("announcementsTab"),
+          noAnnouncements: t("noAnnouncements"),
+          viewGallery: t("viewGallery"),
+          carouselPrevious: t("carouselPrevious"),
+          carouselNext: t("carouselNext")
+        }}
       />
 
       <div className="grid gap-8 lg:grid-cols-[1fr_320px] lg:items-start">

@@ -6,6 +6,7 @@ import {
   deletePhoto,
   movePhoto,
   setCoverPhoto,
+  toggleHomeHighlight,
   updatePhotoCredits,
   updatePhotoExif
 } from "@/app/[locale]/admin/(protected)/events/actions";
@@ -40,6 +41,7 @@ export interface AdminPhoto {
   thumbUrl: string;
   credits: AdminPhotoCredit[];
   isCover: boolean;
+  homeHighlight: boolean;
   exif: AdminPhotoExif;
 }
 
@@ -322,6 +324,11 @@ export default function PhotoManager({
                 {t("cover")}
               </span>
             )}
+            {photo.homeHighlight && (
+              <span className="absolute right-2 top-2 rounded-md bg-yellow-400/95 px-2 py-0.5 text-xs font-semibold text-neutral-900">
+                {t("homeHighlight")}
+              </span>
+            )}
           </div>
 
           <CreditsForm
@@ -360,6 +367,21 @@ export default function PhotoManager({
                 </button>
               </form>
             )}
+            <form action={toggleHomeHighlight}>
+              <input type="hidden" name="photoId" value={photo.id} />
+              <button
+                type="submit"
+                className={
+                  photo.homeHighlight
+                    ? `${btnCls} border-fg-faint bg-fg/10 text-fg`
+                    : btnCls
+                }
+              >
+                {photo.homeHighlight
+                  ? t("removeHomeHighlight")
+                  : t("addHomeHighlight")}
+              </button>
+            </form>
             <form
               action={deletePhoto}
               onSubmit={(e) => {

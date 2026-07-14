@@ -267,6 +267,21 @@ export async function setCoverPhoto(formData: FormData): Promise<void> {
   revalidatePath("/", "layout");
 }
 
+export async function toggleHomeHighlight(formData: FormData): Promise<void> {
+  await guard();
+  const photoId = formData.get("photoId");
+  if (typeof photoId !== "string") return;
+
+  const photo = await prisma.photo.findUnique({ where: { id: photoId } });
+  if (!photo) return;
+
+  await prisma.photo.update({
+    where: { id: photoId },
+    data: { homeHighlight: !photo.homeHighlight }
+  });
+  revalidatePath("/", "layout");
+}
+
 export async function movePhoto(formData: FormData): Promise<void> {
   await guard();
   const photoId = formData.get("photoId");

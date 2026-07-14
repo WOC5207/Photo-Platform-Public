@@ -23,6 +23,7 @@ export interface SiteSettings {
   bookingEnabled: boolean;
   lotteryEnabled: boolean;
   creditProfilesEnabled: boolean;
+  announcementsEnabled: boolean;
   contactEnabled: boolean;
   contactTitleEn: string;
   contactTitleZh: string;
@@ -51,6 +52,7 @@ const DEFAULTS: SiteSettings = {
   bookingEnabled: true,
   lotteryEnabled: true,
   creditProfilesEnabled: true,
+  announcementsEnabled: true,
   contactEnabled: false,
   contactTitleEn: "",
   contactTitleZh: "",
@@ -165,6 +167,13 @@ export const getContactMethods = cache(async () => {
 /** Admin-configured links to the photographer's other sites/profiles. */
 export const getPersonalLinks = cache(async () => {
   return prisma.personalLink.findMany({
+    orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }]
+  });
+});
+
+/** Admin-authored notices shown in the homepage panel's Announcements tab. */
+export const getAnnouncements = cache(async () => {
+  return prisma.announcement.findMany({
     orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }]
   });
 });

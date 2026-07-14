@@ -59,6 +59,7 @@ export default async function EditEventPage({
       socialLinks: c.socialLinks.map((s) => ({ platform: s.platform, url: s.url }))
     })),
     isCover: event.coverPhotoId === p.id,
+    homeHighlight: p.homeHighlight,
     exif: {
       focalLengthMm: p.exifFocalLengthMm?.toString() ?? "",
       aperture: p.exifAperture?.toString() ?? "",

@@ -18,7 +18,7 @@ const THEME_DEFAULT_COLOR = "#0a0a0a";
 // next to the standalone, independently-saving widget for the same part of
 // the site (logo, background image, QR code, personal links, contact
 // methods) without nesting a <form> inside a <form>, which HTML disallows.
-const FORM_ID = "site-settings-form";
+export const FORM_ID = "site-settings-form";
 
 function Group({
   title,
@@ -46,6 +46,7 @@ export default function SiteSettingsForm({
   logoSlot,
   backgroundImageSlot,
   personalLinksSlot,
+  announcementsSlot,
   contactQrEnSlot,
   contactQrZhSlot,
   contactMethodsSlot
@@ -79,6 +80,7 @@ export default function SiteSettingsForm({
   logoSlot: ReactNode;
   backgroundImageSlot: ReactNode;
   personalLinksSlot: ReactNode;
+  announcementsSlot: ReactNode;
   contactQrEnSlot: ReactNode;
   contactQrZhSlot: ReactNode;
   contactMethodsSlot: ReactNode;
@@ -206,6 +208,7 @@ export default function SiteSettingsForm({
           </label>
         </div>
         {personalLinksSlot}
+        {announcementsSlot}
       </Group>
 
       {/* Contact us: header + footer button and modal */}

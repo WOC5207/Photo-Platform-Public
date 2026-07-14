@@ -58,6 +58,11 @@ model Photo {
   sortOrder    Int      @default(0)
   createdAt    DateTime @default(now())
   coverOf      Event?   @relation("EventCover")
+  // Admin-picked for the homepage's per-event carousel. Independent of
+  // coverPhotoId (which is exactly one photo per event, used for gallery
+  // listing thumbnails) — any number of a published event's photos can be
+  // marked here, and that's what populates its homepage carousel slides.
+  homeHighlight Boolean @default(false)
 }
 
 // A single credited-person+subject credit on a photo. Shown identically on
@@ -174,6 +179,7 @@ model SiteSettings {
   bookingEnabled       Boolean  @default(true)
   lotteryEnabled       Boolean  @default(true)
   creditProfilesEnabled Boolean @default(true)
+  announcementsEnabled Boolean  @default(true)
   // "Contact us" card shown behind a header/footer button on the public
   // site. Off hides the button entirely, site-wide. titleEn/Zh label the
   // card (empty = built-in default copy). The link and QR code are set
@@ -214,6 +220,23 @@ model ContactMethod {
   id        String   @id @default(cuid())
   labelEn   String
   labelZh   String
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+// Short admin-authored notices shown in the homepage panel's Announcements
+// tab (e.g. "Booking for March is now open"). No draft state — like
+// PersonalLink/ContactMethod, an announcement is live as soon as it's saved.
+model Announcement {
+  id        String   @id @default(cuid())
+  titleEn   String
+  titleZh   String
+  bodyEn    String   @default("")
+  bodyZh    String   @default("")
+  // Optional accompanying image, one per announcement (not split by
+  // language — same token/storage scheme as backgroundImage/logo, but
+  // keyed per-row here instead of the SiteSettings singleton).
+  image     String   @default("")
   sortOrder Int      @default(0)
   createdAt DateTime @default(now())
 }
