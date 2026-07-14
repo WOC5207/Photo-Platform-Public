@@ -58,6 +58,11 @@ model Photo {
   sortOrder    Int      @default(0)
   createdAt    DateTime @default(now())
   coverOf      Event?   @relation("EventCover")
+  // Admin-picked for the homepage's per-event carousel. Independent of
+  // coverPhotoId (which is exactly one photo per event, used for gallery
+  // listing thumbnails) — any number of a published event's photos can be
+  // marked here, and that's what populates its homepage carousel slides.
+  homeHighlight Boolean @default(false)
 }
 
 // A single credited-person+subject credit on a photo. Shown identically on

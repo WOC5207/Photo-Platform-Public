@@ -49,7 +49,6 @@ export default async function HomePage() {
       where: { published: true },
       orderBy: [{ dateStart: "desc" }, { createdAt: "desc" }],
       include: {
-        coverPhoto: true,
         photos: {
           orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
           include: { credits: { orderBy: { sortOrder: "asc" } } }
@@ -122,27 +121,26 @@ export default async function HomePage() {
       }))
     }));
 
-  // The highlights panel groups a handful of events into their own section
-  // each, leading with the admin-selected cover photo (same one used on the
-  // gallery listing) followed by a few more from that event — a curated
-  // preview per event, distinct from the full per-event photo stream shown
-  // below in "Recent work". Events with no photos are skipped.
+  // The highlights panel only shows events that have at least one photo the
+  // admin explicitly marked for it (Photo.homeHighlight, toggled per photo
+  // in the event editor) — distinct from both the cover photo (gallery
+  // listing thumbnail) and the full per-event stream shown below in
+  // "Recent work". An event with none marked simply doesn't get a tab yet.
   const highlightEvents: HighlightEventGroup[] = events
-    .filter((e) => e.photos.length > 0)
-    .map((e) => {
-      const cover = e.coverPhoto;
-      const ordered = cover
-        ? [cover, ...e.photos.filter((p) => p.id !== cover.id)]
-        : e.photos;
-      return {
-        slug: e.slug,
-        title: pickText(locale, e.titleEn, e.titleZh),
-        dateLabel: formatDateRange(e.dateStart, e.dateEnd) || null,
-        photos: ordered.slice(0, 4).map((p) => ({
-          id: p.id,
-          url: photoUrls(e.id, p.id).med
-        }))
-      };
+    .flatMap((e) => {
+      const selected = e.photos.filter((p) => p.homeHighlight);
+      if (selected.length === 0) return [];
+      return [
+        {
+          slug: e.slug,
+          title: pickText(locale, e.titleEn, e.titleZh),
+          dateLabel: formatDateRange(e.dateStart, e.dateEnd) || null,
+          photos: selected.slice(0, 8).map((p) => ({
+            id: p.id,
+            url: photoUrls(e.id, p.id).med
+          }))
+        }
+      ];
     })
     .slice(0, 6);
 
