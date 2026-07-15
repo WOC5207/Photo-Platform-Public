@@ -71,6 +71,27 @@ export default function SlotAdder({ eventId }: { eventId: string }) {
           />
         </label>
       </div>
+      <div className="grid gap-4 sm:grid-cols-2">
+        <label className="flex flex-col gap-1 text-sm">
+          <span className="text-fg-muted">{t("slotDescriptionEn")}</span>
+          <input
+            name="descriptionEn"
+            maxLength={120}
+            placeholder={t("slotDescriptionPlaceholder")}
+            className={inputCls}
+          />
+        </label>
+        <label className="flex flex-col gap-1 text-sm">
+          <span className="text-fg-muted">{t("slotDescriptionZh")}</span>
+          <input
+            name="descriptionZh"
+            maxLength={120}
+            placeholder={t("slotDescriptionPlaceholder")}
+            className={inputCls}
+          />
+        </label>
+      </div>
+      <p className="-mt-2 text-xs text-fg-subtle">{t("slotDescriptionHint")}</p>
       {state.error && (
         <p className="rounded-lg bg-danger-surface px-3 py-2 text-sm text-danger">
           {t("slotsValidationError")}

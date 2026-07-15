@@ -144,6 +144,11 @@ model TimeSlot {
   startTime      DateTime
   endTime        DateTime
   capacity       Int          @default(1)
+  // Optional label shown to visitors alongside the time (e.g. which
+  // photographer is working that slot, when multiple are onsite the same
+  // day). Set once per batch in the admin "add slots" form. Empty = no label.
+  descriptionEn  String       @default("")
+  descriptionZh  String       @default("")
   bookings       Booking[]
 }
 
@@ -166,13 +171,20 @@ model SiteSettings {
   // Same token/storage scheme as backgroundImage.
   logo                String   @default("")
   // Vocabulary override for the "credited person" / "subject" concepts used
-  // across the photo-credit editor, quick stats, and booking form (e.g. a
+  // across the photo-credit editor and booking form (e.g. a
   // cosplay-photography operator might set "Cosplayer"/"Character"). Empty =
-  // use the built-in generic default copy.
+  // use the built-in generic default copy. The homepage quick-stats label
+  // defaults to this term too, unless overridden below.
   creditTermEn        String   @default("")
   creditTermZh        String   @default("")
   subjectTermEn       String   @default("")
   subjectTermZh       String   @default("")
+  // Homepage quick-stats label for the credited-person count, independent
+  // from creditTermEn/Zh above (e.g. the credit term shown in the photo
+  // editor might be "Cosplayer" while the homepage stat reads "CN" for
+  // brevity). Empty = fall back to creditTermEn/Zh (pluralized for English).
+  homeCreditsLabelEn   String   @default("")
+  homeCreditsLabelZh   String   @default("")
   // Site-wide feature switches. Off hides the feature's nav links and
   // homepage elements and blocks its public routes; admin management pages
   // for existing data stay reachable so nothing already collected is lost.

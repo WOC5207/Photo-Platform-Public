@@ -12,6 +12,7 @@ export interface PublicSlot {
   start: string; // ISO, naive-as-UTC
   end: string;
   remaining: number;
+  description: string;
 }
 
 export interface PublicContactMethod {
@@ -77,8 +78,15 @@ export default function BookingForm({
                   required
                   className="h-4 w-4 accent-fg"
                 />
-                <span className="font-mono text-sm">
-                  {fmt(slot.start)}–{slot.end.slice(11, 16)}
+                <span className="flex flex-col">
+                  <span className="font-mono text-sm">
+                    {fmt(slot.start)}–{slot.end.slice(11, 16)}
+                  </span>
+                  {slot.description && (
+                    <span className="text-xs text-fg-subtle">
+                      {slot.description}
+                    </span>
+                  )}
                 </span>
               </span>
               <span

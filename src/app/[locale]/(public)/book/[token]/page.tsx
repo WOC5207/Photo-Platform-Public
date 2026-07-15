@@ -43,7 +43,8 @@ export default async function BookPage({
     id: s.id,
     start: s.startTime.toISOString(),
     end: s.endTime.toISOString(),
-    remaining: Math.max(0, s.capacity - s._count.bookings)
+    remaining: Math.max(0, s.capacity - s._count.bookings),
+    description: pickText(locale, s.descriptionEn, s.descriptionZh)
   }));
 
   const description = pickText(locale, event.descriptionEn, event.descriptionZh);

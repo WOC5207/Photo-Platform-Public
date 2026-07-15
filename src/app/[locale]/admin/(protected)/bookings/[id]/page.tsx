@@ -3,6 +3,7 @@ import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/db";
 import { config } from "@/lib/config";
 import { getSiteSettings } from "@/lib/settings";
+import { pickText } from "@/lib/content";
 import { formatSlotRange, formatDateTime } from "@/lib/datetime";
 import BookingEventForm from "@/components/admin/BookingEventForm";
 import SlotAdder from "@/components/admin/SlotAdder";
@@ -111,6 +112,11 @@ export default async function EditBookingEventPage({
               const confirmed = slot.bookings.filter(
                 (b) => b.status === "confirmed"
               );
+              const description = pickText(
+                locale,
+                slot.descriptionEn,
+                slot.descriptionZh
+              );
               return (
                 <li
                   key={slot.id}
@@ -125,6 +131,11 @@ export default async function EditBookingEventPage({
                           capacity: slot.capacity
                         })}
                       </span>
+                      {description && (
+                        <span className="ml-3 font-sans font-normal text-fg-subtle">
+                          · {description}
+                        </span>
+                      )}
                     </p>
                     <form action={deleteSlot}>
                       <input type="hidden" name="slotId" value={slot.id} />

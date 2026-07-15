@@ -122,7 +122,9 @@ const slotsSchema = z.object({
   firstSlotStart: z.string(),
   slotMinutes: z.coerce.number().int().min(5).max(24 * 60),
   slotCount: z.coerce.number().int().min(1).max(100),
-  capacity: z.coerce.number().int().min(1).max(1000)
+  capacity: z.coerce.number().int().min(1).max(1000),
+  descriptionEn: z.string().trim().max(120),
+  descriptionZh: z.string().trim().max(120)
 });
 
 export async function addSlots(
@@ -137,7 +139,9 @@ export async function addSlots(
     firstSlotStart: formData.get("firstSlotStart") ?? "",
     slotMinutes: formData.get("slotMinutes") ?? "",
     slotCount: formData.get("slotCount") ?? "",
-    capacity: formData.get("capacity") ?? ""
+    capacity: formData.get("capacity") ?? "",
+    descriptionEn: formData.get("descriptionEn") ?? "",
+    descriptionZh: formData.get("descriptionZh") ?? ""
   });
   if (!parsed.success) return { error: "validation" };
 
@@ -149,11 +153,19 @@ export async function addSlots(
   });
   if (!event) return { error: "validation" };
 
-  const { slotMinutes, slotCount, capacity } = parsed.data;
+  const { slotMinutes, slotCount, capacity, descriptionEn, descriptionZh } =
+    parsed.data;
   const slots = Array.from({ length: slotCount }, (_, i) => {
     const s = new Date(start.getTime() + i * slotMinutes * 60_000);
     const e = new Date(s.getTime() + slotMinutes * 60_000);
-    return { bookingEventId: eventId, startTime: s, endTime: e, capacity };
+    return {
+      bookingEventId: eventId,
+      startTime: s,
+      endTime: e,
+      capacity,
+      descriptionEn,
+      descriptionZh
+    };
   });
 
   await prisma.timeSlot.createMany({ data: slots });
