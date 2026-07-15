@@ -252,6 +252,68 @@ export async function deletePhoto(formData: FormData): Promise<void> {
   revalidatePath("/", "layout");
 }
 
+function bulkPhotoIds(formData: FormData): string[] {
+  return formData.getAll("photoIds").filter((v): v is string => typeof v === "string");
+}
+
+export async function bulkDeletePhotos(formData: FormData): Promise<void> {
+  await guard();
+  const photoIds = bulkPhotoIds(formData);
+  if (photoIds.length === 0) return;
+
+  const photos = await prisma.photo.findMany({ where: { id: { in: photoIds } } });
+  if (photos.length === 0) return;
+
+  await prisma.photo.deleteMany({ where: { id: { in: photoIds } } });
+  await Promise.all(
+    photos.map((p) => deletePhotoFiles(p.eventId, p.id, p.filename))
+  );
+  revalidatePath("/", "layout");
+}
+
+/**
+ * Overwrites every selected photo's credits with a single (creditName,
+ * subject) entry — the bulk counterpart to updatePhotoCredits, for tagging a
+ * batch of photos of the same person at once instead of one at a time. Reuses
+ * that person's remembered social links (CreditProfile) if one exists, same
+ * as the per-photo editor does when a known name is typed.
+ */
+export async function bulkSetPhotoCredit(formData: FormData): Promise<void> {
+  await guard();
+  const photoIds = bulkPhotoIds(formData);
+  const creditName = String(formData.get("creditName") ?? "").trim().slice(0, 200);
+  if (photoIds.length === 0 || !creditName) return;
+  const subject = String(formData.get("subject") ?? "").trim().slice(0, 200);
+
+  const profile = await prisma.creditProfile.findUnique({
+    where: { creditName },
+    include: { socialLinks: { orderBy: { sortOrder: "asc" } } }
+  });
+  const socialLinks = profile?.socialLinks ?? [];
+
+  await prisma.$transaction(
+    photoIds.flatMap((photoId) => [
+      prisma.photoCredit.deleteMany({ where: { photoId } }),
+      prisma.photoCredit.create({
+        data: {
+          photoId,
+          creditName,
+          subject,
+          sortOrder: 0,
+          socialLinks: {
+            create: socialLinks.map((s, j) => ({
+              platform: s.platform,
+              url: s.url,
+              sortOrder: j
+            }))
+          }
+        }
+      })
+    ])
+  );
+  revalidatePath("/", "layout");
+}
+
 export async function setCoverPhoto(formData: FormData): Promise<void> {
   await guard();
   const photoId = formData.get("photoId");
