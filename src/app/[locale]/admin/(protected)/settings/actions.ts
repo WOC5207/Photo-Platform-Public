@@ -27,6 +27,8 @@ const settingsSchema = z.object({
   creditTermZh: z.string().trim().max(60),
   subjectTermEn: z.string().trim().max(60),
   subjectTermZh: z.string().trim().max(60),
+  homeCreditsLabelEn: z.string().trim().max(60),
+  homeCreditsLabelZh: z.string().trim().max(60),
   // Empty (theme default) or a #rgb / #rrggbb hex color.
   backgroundColor: z
     .string()
@@ -60,6 +62,8 @@ export async function updateSiteSettings(
     creditTermZh: formData.get("creditTermZh") ?? "",
     subjectTermEn: formData.get("subjectTermEn") ?? "",
     subjectTermZh: formData.get("subjectTermZh") ?? "",
+    homeCreditsLabelEn: formData.get("homeCreditsLabelEn") ?? "",
+    homeCreditsLabelZh: formData.get("homeCreditsLabelZh") ?? "",
     backgroundColor: formData.get("backgroundColor") ?? "",
     bookingEnabled: formData.get("bookingEnabled") === "on",
     lotteryEnabled: formData.get("lotteryEnabled") === "on",
@@ -88,6 +92,8 @@ export async function updateSiteSettings(
       creditTermZh: d.creditTermZh,
       subjectTermEn: d.subjectTermEn,
       subjectTermZh: d.subjectTermZh,
+      homeCreditsLabelEn: d.homeCreditsLabelEn,
+      homeCreditsLabelZh: d.homeCreditsLabelZh,
       backgroundColor: d.backgroundColor,
       bookingEnabled: d.bookingEnabled,
       lotteryEnabled: d.lotteryEnabled,
@@ -110,6 +116,8 @@ export async function updateSiteSettings(
       creditTermZh: d.creditTermZh,
       subjectTermEn: d.subjectTermEn,
       subjectTermZh: d.subjectTermZh,
+      homeCreditsLabelEn: d.homeCreditsLabelEn,
+      homeCreditsLabelZh: d.homeCreditsLabelZh,
       backgroundColor: d.backgroundColor,
       bookingEnabled: d.bookingEnabled,
       lotteryEnabled: d.lotteryEnabled,

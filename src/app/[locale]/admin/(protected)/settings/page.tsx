@@ -44,6 +44,8 @@ export default async function SiteSettingsPage() {
           creditTermZh: settings.creditTermZh,
           subjectTermEn: settings.subjectTermEn,
           subjectTermZh: settings.subjectTermZh,
+          homeCreditsLabelEn: settings.homeCreditsLabelEn,
+          homeCreditsLabelZh: settings.homeCreditsLabelZh,
           bookingEnabled: settings.bookingEnabled,
           lotteryEnabled: settings.lotteryEnabled,
           creditProfilesEnabled: settings.creditProfilesEnabled,

@@ -20,6 +20,8 @@ export interface SiteSettings {
   creditTermZh: string;
   subjectTermEn: string;
   subjectTermZh: string;
+  homeCreditsLabelEn: string;
+  homeCreditsLabelZh: string;
   bookingEnabled: boolean;
   lotteryEnabled: boolean;
   creditProfilesEnabled: boolean;
@@ -49,6 +51,8 @@ const DEFAULTS: SiteSettings = {
   creditTermZh: "",
   subjectTermEn: "",
   subjectTermZh: "",
+  homeCreditsLabelEn: "",
+  homeCreditsLabelZh: "",
   bookingEnabled: true,
   lotteryEnabled: true,
   creditProfilesEnabled: true,
@@ -130,6 +134,23 @@ export function resolveSubjectTerm(
   fallback: string
 ): string {
   return pickText(locale, settings.subjectTermEn, settings.subjectTermZh) || fallback;
+}
+
+/**
+ * Resolve the homepage quick-stats label for the credited-person count,
+ * independent from the credit term used elsewhere (photo editor, booking
+ * form) — falls back to the caller-supplied default (typically the credit
+ * term, pluralized) when no override is set.
+ */
+export function resolveHomeCreditsLabel(
+  settings: SiteSettings,
+  locale: string,
+  fallback: string
+): string {
+  return (
+    pickText(locale, settings.homeCreditsLabelEn, settings.homeCreditsLabelZh) ||
+    fallback
+  );
 }
 
 /** Same as resolveHomeTitle, for the "Contact us" card heading. */

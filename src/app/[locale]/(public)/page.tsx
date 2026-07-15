@@ -9,7 +9,8 @@ import {
   getAnnouncements,
   getPersonalLinks,
   resolveHomeTitle,
-  resolveCreditTerm
+  resolveCreditTerm,
+  resolveHomeCreditsLabel
 } from "@/lib/settings";
 import EventPhotoStream, {
   type StreamEvent
@@ -39,7 +40,8 @@ export default async function HomePage() {
 
   const heroTitle = resolveHomeTitle(settings, locale, t("title"));
   const creditTerm = resolveCreditTerm(settings, locale, tc("creditTerm"));
-  const creditsLabel = locale === "zh" ? creditTerm : `${creditTerm}s`;
+  const defaultCreditsLabel = locale === "zh" ? creditTerm : `${creditTerm}s`;
+  const creditsLabel = resolveHomeCreditsLabel(settings, locale, defaultCreditsLabel);
 
   const today = new Date();
   today.setUTCHours(0, 0, 0, 0);

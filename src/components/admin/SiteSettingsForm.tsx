@@ -63,6 +63,8 @@ export default function SiteSettingsForm({
     creditTermZh: string;
     subjectTermEn: string;
     subjectTermZh: string;
+    homeCreditsLabelEn: string;
+    homeCreditsLabelZh: string;
     bookingEnabled: boolean;
     lotteryEnabled: boolean;
     creditProfilesEnabled: boolean;
@@ -357,6 +359,29 @@ export default function SiteSettingsForm({
               form={FORM_ID}
               name="subjectTermZh"
               defaultValue={initial.subjectTermZh}
+              maxLength={60}
+              className={inputCls}
+            />
+          </label>
+        </div>
+        <p className="-mb-1 text-xs text-fg-subtle">{t("homeCreditsLabelHint")}</p>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <label className="flex flex-col gap-1 text-sm">
+            <span className="text-fg-muted">{t("homeCreditsLabelEn")}</span>
+            <input
+              form={FORM_ID}
+              name="homeCreditsLabelEn"
+              defaultValue={initial.homeCreditsLabelEn}
+              maxLength={60}
+              className={inputCls}
+            />
+          </label>
+          <label className="flex flex-col gap-1 text-sm">
+            <span className="text-fg-muted">{t("homeCreditsLabelZh")}</span>
+            <input
+              form={FORM_ID}
+              name="homeCreditsLabelZh"
+              defaultValue={initial.homeCreditsLabelZh}
               maxLength={60}
               className={inputCls}
             />
